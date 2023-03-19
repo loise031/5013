@@ -73,7 +73,7 @@ All_Lakes_NoNA$Layer <-  ifelse(All_Lakes_NoNA$Depth < All_Lakes_NoNA$top.meta, 
 #Next step is to filter for only August values
 
 library(lubridate)        #Allows me to extract a month out of my POSIX value 
- 
+
 All_Lakes_Aug <- All_Lakes_NoNA %>%
   filter(month(Date) == 8)
 
