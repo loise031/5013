@@ -17,7 +17,6 @@ MNprofiles <- read_csv("MNprofiles.csv")
 View(MNprofiles)
 
 
-
 #Turns out the columns are not in the correct order and MN has an extra column in DOW
 
 #removeding DOW
@@ -77,6 +76,6 @@ library(lubridate)        #Allows me to extract a month out of my POSIX value
 All_Lakes_Aug <- All_Lakes_NoNA %>%
   filter(month(Date) == 8)
 
-
+#
 
 
