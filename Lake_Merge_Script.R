@@ -119,13 +119,72 @@ table(All_Lakes_AugY$State)
 #2065 30051 10651 
 
 
+#When looking at the data, I noticed that some of the depths are deeper than the max depth columns
+#Removing depths greater than the max depth:
+
+All_Lakes_AugY <- All_Lakes_AugY[All_Lakes_AugY$Depth <= All_Lakes_AugY$Max_Depth, ] #Depth must be less than max depth
+
+#The Jane paper, "“Removed the deepest measurement for individual profiles if the maximum depth for that profile 
+#                 exceeded the maximum depth of 90% of the remaining profiles for a given lake.”
+#Code to accomplish the same step: 
 
 
+#The following code within the #s is ChatGPT generated
+##############################################################################
+
+# Calculate the maximum depth for each profile at each lake
+max_depth_calc <- All_Lakes_AugY %>%
+  group_by(MonitoringLocationIdentifier, ID) %>%
+  summarize(max_depth_calc = max(Depth))
+
+# Calculate the 90th percentile maximum depth for each lake
+percentile_depth <- max_depth_calc %>%
+  group_by(MonitoringLocationIdentifier) %>%
+  summarize(percentile_depth = quantile(max_depth_calc, 0.9))
+
+# Remove deepest depth values exceeding the 90th percentile maximum depth for each lake
+All_Lakes_AugYD <- All_Lakes_AugY %>%
+  left_join(max_depth_calc, by = c("MonitoringLocationIdentifier", "ID")) %>%
+  left_join(percentile_depth, by = "MonitoringLocationIdentifier") %>%
+  filter(Depth <= max(percentile_depth, na.rm = TRUE))
+
+#############################################################################
+
+#This code did not remove any values at all, could either not work or
+#it could be because I already deleted all values below the max depth: Should be discussed
 
 
+#Now I need to extend profiles to the surface is they are not already there
 
+#Now I need to do the following to expand the tops of profiles:
+#If the shallowest depth was 0.5 m, that depth was changed to 0 (surface)
+#If the shallowest depth was between 3 and 0.5 meters, added a depth 0 and assigned it the same values as the shallowest depth
+#If greater than 3m, removed
 
+#First create a df of the shallowest depth for each profile:
 
+shallowest_depth <- All_Lakes_AugYD %>%
+  group_by(MonitoringLocationIdentifier, ID) %>%
+  summarize(shallowest_depth = min(Depth)) #The value returned in this column is the shallowest depth per profile
 
+#After looking at the data, there are only two profiles in the whole dataset greater than 3, code to remove:
 
+# Creates vector with all of the profiles with a depth >= 3 
+removed_profiles <- shallowest_depth %>%
+  filter(shallowest_depth >= 3) %>%
+  pull(ID)
 
+All_Lakes_AugYDR <- All_Lakes_AugYD %>%
+  filter(!ID %in% removed_profiles)
+
+#Now to verify
+shallowest_dept_2 <- All_Lakes_AugYDR %>%
+  group_by(MonitoringLocationIdentifier, ID) %>%
+  summarize(shallowest_depth = min(Depth))
+
+#This worked! However, there are 600 trolls with a depth of -1, not sure how to treat properly.
+#I am assuming remove those measurements, but I am unsure
+
+Clean_Lakes <- All_Lakes_AugYDR
+
+#This will be the master DF for analyses
