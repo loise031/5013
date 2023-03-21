@@ -19,7 +19,7 @@ View(MNprofiles)
 
 #Turns out the columns are not in the correct order and MN has an extra column in DOW
 
-#removeding DOW
+#removing DOW
 
 Cleaned_MN <- MNprofiles[, -which(names(MNprofiles) == "DOW")]
 Cleaned_MN
@@ -73,8 +73,11 @@ All_Lakes_NoNA$Layer <-  ifelse(All_Lakes_NoNA$Depth < All_Lakes_NoNA$top.meta, 
 
 library(lubridate)        #Allows me to extract a month out of my POSIX value 
 
-All_Lakes_Aug <- All_Lakes_NoNA %>%
-  filter(month(Date) == 8)
+start_date <- ymd("2022-07-15") #Beginning of compariable measurements
+end_date <- ymd("2022-08-31") #End of compariable measurements
+All_Lakes_Aug <- All_Lakes_NoNA[month(All_Lakes_NoNA$Date) == month(start_date) & day(All_Lakes_NoNA$Date) >= day(start_date) | 
+                    month(All_Lakes_NoNA$Date) == month(end_date) & day(All_Lakes_NoNA$Date) <= day(end_date), ]
+
 
 #Now follow methods from Jane et al
 
@@ -116,7 +119,7 @@ All_Lakes_AugY <- subset(All_Lakes_Aug,
 table(All_Lakes_AugY$State)
 #Remaining Locations:
 #Mi    MN    WI 
-#2065 30051 10651 
+#2804 47623 16774 
 
 
 #When looking at the data, I noticed that some of the depths are deeper than the max depth columns
@@ -154,7 +157,7 @@ All_Lakes_AugYD <- All_Lakes_AugY %>%
 #it could be because I already deleted all values below the max depth: Should be discussed
 
 
-#Now I need to extend profiles to the surface is they are not already there
+#Now I need to extend profiles to the surface if they are not already there
 
 #Now I need to do the following to expand the tops of profiles:
 #If the shallowest depth was 0.5 m, that depth was changed to 0 (surface)
@@ -167,7 +170,7 @@ shallowest_depth <- All_Lakes_AugYD %>%
   group_by(MonitoringLocationIdentifier, ID) %>%
   summarize(shallowest_depth = min(Depth)) #The value returned in this column is the shallowest depth per profile
 
-#After looking at the data, there are only two profiles in the whole dataset greater than 3, code to remove:
+#After looking at the data, there are only two profiles in the whole data set greater than 3, code to remove:
 
 # Creates vector with all of the profiles with a depth >= 3 
 removed_profiles <- shallowest_depth %>%
