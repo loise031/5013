@@ -26,7 +26,7 @@ Daily_avg_comb <- Daily_avg_comb %>%
 #Averaging each profile per year: 
 
 Annual_Comb <- Daily_avg_comb %>%
-  group_by(Year, ID) %>%
+  group_by(Year, MonitoringLocationIdentifier) %>%
   summarize(DO_mean_avg = mean(DO_mean), 
             Temp_mean_avg = mean(Temp_mean), 
             Latitude = first(Latitude),
@@ -36,7 +36,7 @@ Annual_Comb <- Daily_avg_comb %>%
             top.meta = first(top.meta),
             top.hypo = first(top.hypo),
             Layer = first(Layer),
-            MonitoringLocationIdentifier = first(MonitoringLocationIdentifier)) %>%
+            ID = first(ID)) %>%
   ungroup()
 
 #Clean the name of the annual DO and Temperature columns
@@ -67,7 +67,7 @@ Annual_Comb <- Annual_Comb %>%
 #Seeing if there are any lakes that did not get assigned an elevation
 table(is.na(Annual_Comb))
 
-#6613 lakes did not receive an elevation, adding the average elevation for the respective state:
+#1071 lakes did not receive an elevation, adding the average elevation for the respective state:
 # MN: 370 m MI: 270 m  WI: 320 m per: https://en.wikipedia.org/wiki/List_of_U.S._states_and_territories_by_elevation
 
 #Overwrites the elevation NAs with the average state elevation
@@ -84,6 +84,8 @@ Annual_Comb$DO_saturation <- DO.saturation(DO = Annual_Comb$Annual_DO,
                                            temp = Annual_Comb$Annual_Temp, 
                                            elev = Annual_Comb$Elevation_m)
 
+###### Final Annual_Comb df should have 4431 obs of 14 variables
+  ####  with each MonitoringLocationIdentifier occurring =<1 time per year
 
 ###############################################################################
 #############################-Begin-DO-Analysis-############################### 
