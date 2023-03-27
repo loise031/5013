@@ -114,14 +114,21 @@ TheilSen(as.Date(Annual_Comb$Date_est), pollutant = Annual_Comb$Annual_DO, desea
 
 TheilSen(Annual_Comb, pollutant = Annual_Comb$Annual_DO)
 
-## PETER CODE ##
+## PETER CODE ########################################################
 ##making required "date" field in as.Date format
 ##openair package TheilSen function needs a "date" field in YYYY-mm-dd
 Annual_Comb$date <- as.Date(paste(Annual_Comb$Year, "08", "01", sep = "-"))
 Annual_Comb$date <- as.Date(Annual_Comb$date, format = "%d/%m/%Y")
 
+##now need to make one more change to the date format
+library(lubridate) 
+Annual_Comb$date <- lubridate::ymd_hms(paste(Annual_Comb$date, "00:00:00"))
+
 ##now I have a date field and a "pollutant" but I am getting the error:
   ##Error in seq.Date(start.date, end.date, by = interval) : 'by' is NA
   ##when I run the line of code below
-TheilSen(Annual_Comb, pollutant = "Annual_DO", ylab = "DO Concentration (mg/l)", deseason = FALSE)
-
+test_ts <- TheilSen(Annual_Comb, pollutant = "Annual_DO", deseason = FALSE)
+test_ts$data[[2]]
+head(test_ts$data[[1]])
+  
+ 
