@@ -85,15 +85,29 @@ Annual_Comb$DO_saturation <- DO.saturation(DO = Annual_Comb$Annual_DO,
                                            elev = Annual_Comb$Elevation_m)
 
 
+###############################################################################
+#############################-Begin-DO-Analysis-############################### 
+###############################################################################
+
+#Lots of problems here, A, I am not convinced I calculated DO sat correctly due to 1/3rd of 
+#the values being > 1 and, B, I cannot get the TheilSen() function to work for the df... ugh
+
+library(openair)
+
+plot(Annual_Comb$Year, Annual_Comb$DO_saturation,
+     ylim= c(0:1))
+scatter.smooth(Annual_Comb$DO_saturation ~ Annual_Comb$Year,
+               ylim= c(0:1))
 
 
+?TheilSen()
 
+Annual_Comb$Date_est <- as.Date(paste(Annual_Comb$Year, "08", "01", sep = "-"))
 
+Annual_Comb$Date_est <- as.Date(Annual_Comb$Date_est)
 
-
-
-
-
+TheilSen(as.Date(Annual_Comb$Date_est), pollutant = Annual_Comb$Annual_DO, deseason = FALSE, xlab = "Year",
+         ylab = "DO Concentration (mg/l)")
 
 
 
