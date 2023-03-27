@@ -41,7 +41,13 @@ Added_MI <- MIprofiles_0_5 %>%
 
 Comb_Lakes <- rbind(Added_MI, Added_MN, Added_WI)
 
+#Specifies where within the water column the depth measurement is taken
+Comb_Lakes$Layer <-  ifelse(Comb_Lakes$Depth < Comb_Lakes$top.meta, "Epilimnion",
+                                ifelse(Comb_Lakes$Depth < Comb_Lakes$top.hypo, 
+                                       "Hypolimnion", "Metalimnion"))
 
+
+write.csv(Comb_Lakes, "Comb_Lakes.csv")
 
 
 
