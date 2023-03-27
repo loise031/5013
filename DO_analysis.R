@@ -93,9 +93,10 @@ Annual_Comb$DO_saturation <- DO.saturation(DO = Annual_Comb$Annual_DO,
 
 #Lots of problems here, A, I am not convinced I calculated DO sat correctly due to 1/3rd of 
 #the values being > 1 and, B, I cannot get the TheilSen() function to work for the df... ugh
-
+install.packages("openair")
 library(openair)
 
+## ROB CODE ##
 plot(Annual_Comb$Year, Annual_Comb$DO_saturation,
      ylim= c(0:1))
 scatter.smooth(Annual_Comb$DO_saturation ~ Annual_Comb$Year,
@@ -111,6 +112,16 @@ Annual_Comb$Date_est <- as.Date(Annual_Comb$Date_est)
 TheilSen(as.Date(Annual_Comb$Date_est), pollutant = Annual_Comb$Annual_DO, deseason = FALSE, xlab = "Year",
          ylab = "DO Concentration (mg/l)")
 
+TheilSen(Annual_Comb, pollutant = Annual_Comb$Annual_DO)
 
+## PETER CODE ##
+##making required "date" field in as.Date format
+##openair package TheilSen function needs a "date" field in YYYY-mm-dd
+Annual_Comb$date <- as.Date(paste(Annual_Comb$Year, "08", "01", sep = "-"))
+Annual_Comb$date <- as.Date(Annual_Comb$date, format = "%d/%m/%Y")
 
+##now I have a date field and a "pollutant" but I am getting the error:
+  ##Error in seq.Date(start.date, end.date, by = interval) : 'by' is NA
+  ##when I run the line of code below
+TheilSen(Annual_Comb, pollutant = "Annual_DO", ylab = "DO Concentration (mg/l)", deseason = FALSE)
 
