@@ -93,9 +93,10 @@ Annual_Comb$DO_saturation <- DO.saturation(DO = Annual_Comb$Annual_DO,
 
 #Lots of problems here, A, I am not convinced I calculated DO sat correctly due to 1/3rd of 
 #the values being > 1 and, B, I cannot get the TheilSen() function to work for the df... ugh
-
+install.packages("openair")
 library(openair)
 
+## ROB CODE ##############
 plot(Annual_Comb$Year, Annual_Comb$DO_saturation,
      ylim= c(0:1))
 scatter.smooth(Annual_Comb$DO_saturation ~ Annual_Comb$Year,
@@ -111,6 +112,22 @@ Annual_Comb$Date_est <- as.Date(Annual_Comb$Date_est)
 TheilSen(as.Date(Annual_Comb$Date_est), pollutant = Annual_Comb$Annual_DO, deseason = FALSE, xlab = "Year",
          ylab = "DO Concentration (mg/l)")
 
+TheilSen(Annual_Comb, pollutant = Annual_Comb$Annual_DO)
 
+## PETER CODE ########################################################
+##making required "date" field in as.Date format
+##openair package TheilSen function needs a "date" field in YYYY-mm-dd
+Annual_Comb$date <- as.Date(paste(Annual_Comb$Year, "08", "01", sep = "-"))
+Annual_Comb$date <- as.Date(Annual_Comb$date, format = "%d/%m/%Y")
 
+##now need to make one more change to the date format
+library(lubridate) 
+Annual_Comb$date <- lubridate::ymd_hms(paste(Annual_Comb$date, "00:00:00"))
 
+##do Sen's slope
+test_ts <- TheilSen(Annual_Comb, pollutant = "Annual_DO", deseason = FALSE)
+
+##see results
+test_ts$data[[2]]
+head(test_ts$data[[1]])
+ 
