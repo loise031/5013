@@ -96,7 +96,7 @@ Annual_Comb$DO_saturation <- DO.saturation(DO = Annual_Comb$Annual_DO,
 install.packages("openair")
 library(openair)
 
-## ROB CODE ##
+## ROB CODE ##############
 plot(Annual_Comb$Year, Annual_Comb$DO_saturation,
      ylim= c(0:1))
 scatter.smooth(Annual_Comb$DO_saturation ~ Annual_Comb$Year,
@@ -124,11 +124,10 @@ Annual_Comb$date <- as.Date(Annual_Comb$date, format = "%d/%m/%Y")
 library(lubridate) 
 Annual_Comb$date <- lubridate::ymd_hms(paste(Annual_Comb$date, "00:00:00"))
 
-##now I have a date field and a "pollutant" but I am getting the error:
-  ##Error in seq.Date(start.date, end.date, by = interval) : 'by' is NA
-  ##when I run the line of code below
+##do Sen's slope
 test_ts <- TheilSen(Annual_Comb, pollutant = "Annual_DO", deseason = FALSE)
+
+##see results
 test_ts$data[[2]]
 head(test_ts$data[[1]])
-  #
  
