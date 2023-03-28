@@ -6,7 +6,7 @@
 #Calculate mean surface water and deep water depths for each lakes
 #surface is defined as the epilimnion
 #Deep water is defined as the hypolimnion, both present categorized in the layer column
-
+library(dplyr)
 # Grouping new df to still include relevant lake info
 #Take the mean of each group of DO by layer
 #Note, all of the other variables included here should be the same for each unique profiles,
@@ -86,48 +86,57 @@ Annual_Comb$DO_saturation <- DO.saturation(DO = Annual_Comb$Annual_DO,
 
 ###### Final Annual_Comb df should have 4431 obs of 14 variables
   ####  with each MonitoringLocationIdentifier occurring =<1 time per year
+#Lots of problems here: I am not convinced I calculated DO sat correctly due to 1/3rd of 
+#the values being > 1
 
 ###############################################################################
-#############################-Begin-DO-Analysis-############################### 
+#############################-Begin-Analysis-##################################
 ###############################################################################
 
-#Lots of problems here, A, I am not convinced I calculated DO sat correctly due to 1/3rd of 
-#the values being > 1 and, B, I cannot get the TheilSen() function to work for the df... ugh
 install.packages("openair")
 library(openair)
 
-## ROB CODE ##############
-plot(Annual_Comb$Year, Annual_Comb$DO_saturation,
-     ylim= c(0:1))
-scatter.smooth(Annual_Comb$DO_saturation ~ Annual_Comb$Year,
-               ylim= c(0:1))
-
-
-?TheilSen()
-
-Annual_Comb$Date_est <- as.Date(paste(Annual_Comb$Year, "08", "01", sep = "-"))
-
-Annual_Comb$Date_est <- as.Date(Annual_Comb$Date_est)
-
-TheilSen(as.Date(Annual_Comb$Date_est), pollutant = Annual_Comb$Annual_DO, deseason = FALSE, xlab = "Year",
-         ylab = "DO Concentration (mg/l)")
-
-TheilSen(Annual_Comb, pollutant = Annual_Comb$Annual_DO)
-
-## PETER CODE ########################################################
 ##making required "date" field in as.Date format
 ##openair package TheilSen function needs a "date" field in YYYY-mm-dd
+##Annual_Comb now will have 15 variables
 Annual_Comb$date <- as.Date(paste(Annual_Comb$Year, "08", "01", sep = "-"))
 Annual_Comb$date <- as.Date(Annual_Comb$date, format = "%d/%m/%Y")
 
-##now need to make one more change to the date format
+##now need to make one more change to the date format for TheilSen to run without errors
 library(lubridate) 
 Annual_Comb$date <- lubridate::ymd_hms(paste(Annual_Comb$date, "00:00:00"))
 
+##TEST SENS SLOPE (old code, don't need to use)
 ##do Sen's slope
-test_ts <- TheilSen(Annual_Comb, pollutant = "Annual_DO", deseason = FALSE)
-
+##test_ts <- TheilSen(Annual_Comb, pollutant = "Annual_DO", deseason = FALSE)
 ##see results
-test_ts$data[[2]]
-head(test_ts$data[[1]])
- 
+##test_ts$data[[2]]
+##head(test_ts$data[[1]])
+
+##SEN'S SLOPE
+ ##temp sens slope for each layer
+  temp_sens_epihypo <- TheilSen(Annual_Comb, pollutant = "Annual_Temp", type = "Layer", deseason = FALSE, ylab = "Temperature (C)")
+  ##results:
+    view(temp_sens_epihypo)
+    head(temp_sens_epihypo$data[[1]])
+    temp_sens_epihypo$data[[2]]
+    ## epi slope = 0.003483362 p=0.16, hypo slope = -0.013067869 p=0.19
+    
+ ##DO concentration sens slope for each layer
+  DOconc_sens_epihypo <- TheilSen(Annual_Comb, pollutant = "Annual_DO", type = "Layer", deseason = FALSE, ylab = "Dissolved Oxygen (mg/L)")
+  ##results:
+  view(DOconc_sens_epihypo)
+  head(DOconc_sens_epihypo$data[[1]])
+  DOconc_sens_epihypo$data[[2]]
+  ## epi slope = 0.01730202 p=0.00000***, hypo slope = 0.01158640 p=0.26
+  ## looks like some high erroneous DO readings are still in the data 
+  
+ ##DO saturation sens slope for each layer
+  DOsat_sens_epihypo <- TheilSen(Annual_Comb, pollutant = "DO_saturation", type = "Layer", deseason = FALSE, ylab = "Dissolved Oxygen Percent Saturation (%)")
+  ##results:
+  view(DOsat_sens_epihypo)
+  head(DOsat_sens_epihypo$data[[1]])
+  DOsat_sens_epihypo$data[[2]]
+  ## epi slope = 0.0019896546 p=0.00000***, hypo slope = 0.0009983574 p=0.41
+  ## looks like some high erroneous DO readings are still in the data
+  
