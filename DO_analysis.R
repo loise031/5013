@@ -162,7 +162,7 @@ head(Sens_Hypo_DOsat$data[[1]])
 ###################################################################################
 
 ##making required "date" field in as.Date format 
-##(DONT RUN 163-171 if you already ran the same code above in ROB CODE section)
+##(DONT RUN THIS BLOCK if you already ran the same code above in ROB CODE section)
 ##openair package TheilSen function needs a "date" field in YYYY-mm-dd
 ##Annual_Comb now will have 15 variables
 Annual_Comb$date <- as.Date(paste(Annual_Comb$Year, "08", "01", sep = "-"))
