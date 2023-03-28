@@ -50,15 +50,12 @@ Annual_Comb <- Annual_Comb %>%
   rename(Annual_Temp = Temp_mean_avg)
 
 
-###### Final Annual_Comb df should have 4431 obs of 14 variables
-<<<<<<< HEAD
+###### Final Annual_Comb df should have 4431 obs of 15 variables
   ####  with each MonitoringLocationIdentifier occurring =<1 time per year
 #Lots of problems here: I am not convinced I calculated DO sat correctly due to 1/3rd of 
 #the values being > 1
 
-=======
   ####  with each MonitoringLocationIdentifier occurring >=1 time per year
->>>>>>> e29f3d015ff3c19461ac7c404c08b190995695d1
 
 ###############################################################################
 #############################-Begin-Analysis-##################################
@@ -67,8 +64,6 @@ Annual_Comb <- Annual_Comb %>%
 install.packages("openair")
 library(openair)
 
-<<<<<<< HEAD
-=======
 #Visualization 
 
 plot(Annual_Comb$Annual_DO_Sat)
@@ -162,14 +157,16 @@ head(Sens_Hypo_DOsat$data[[1]])
 #Slope of 0.0011 with an intercept of 0.72, but a p-value of 0.3
 
 
-## PETER CODE ########################################################
->>>>>>> e29f3d015ff3c19461ac7c404c08b190995695d1
-##making required "date" field in as.Date format
+###################################################################################
+##Peter code for Sen's Slope ##
+###################################################################################
+
+##making required "date" field in as.Date format 
+##(DONT RUN 163-171 if you already ran the same code above in ROB CODE section)
 ##openair package TheilSen function needs a "date" field in YYYY-mm-dd
 ##Annual_Comb now will have 15 variables
 Annual_Comb$date <- as.Date(paste(Annual_Comb$Year, "08", "01", sep = "-"))
 Annual_Comb$date <- as.Date(Annual_Comb$date, format = "%d/%m/%Y")
-
 ##now need to make one more change to the date format for TheilSen to run without errors
 library(lubridate) 
 Annual_Comb$date <- lubridate::ymd_hms(paste(Annual_Comb$date, "00:00:00"))
@@ -188,23 +185,23 @@ Annual_Comb$date <- lubridate::ymd_hms(paste(Annual_Comb$date, "00:00:00"))
     view(temp_sens_epihypo)
     head(temp_sens_epihypo$data[[1]])
     temp_sens_epihypo$data[[2]]
-    ## epi slope = 0.003483362 p=0.16, hypo slope = -0.013067869 p=0.19
+    ## epi slope = 0.003483362 p=0.15, hypo slope = -0.013067869 p=0.22
     
  ##DO concentration sens slope for each layer
-  DOconc_sens_epihypo <- TheilSen(Annual_Comb, pollutant = "Annual_DO", type = "Layer", deseason = FALSE, ylab = "Dissolved Oxygen (mg/L)")
+  DOconc_sens_epihypo <- TheilSen(Annual_Comb, pollutant = "Annual_DO_Con", type = "Layer", deseason = FALSE, ylab = "Dissolved Oxygen (mg/L)")
   ##results:
   view(DOconc_sens_epihypo)
   head(DOconc_sens_epihypo$data[[1]])
   DOconc_sens_epihypo$data[[2]]
-  ## epi slope = 0.01730202 p=0.00000***, hypo slope = 0.01158640 p=0.26
+  ## epi slope = 0.01730202 p=0.00000***, hypo slope = 0.01158640 p=0.22
   ## looks like some high erroneous DO readings are still in the data 
   
  ##DO saturation sens slope for each layer
-  DOsat_sens_epihypo <- TheilSen(Annual_Comb, pollutant = "DO_saturation", type = "Layer", deseason = FALSE, ylab = "Dissolved Oxygen Percent Saturation (%)")
+  DOsat_sens_epihypo <- TheilSen(Annual_Comb, pollutant = "Annual_DO_Sat", type = "Layer", deseason = FALSE, ylab = "Dissolved Oxygen Percent Saturation (%)")
   ##results:
   view(DOsat_sens_epihypo)
   head(DOsat_sens_epihypo$data[[1]])
   DOsat_sens_epihypo$data[[2]]
-  ## epi slope = 0.0019896546 p=0.00000***, hypo slope = 0.0009983574 p=0.41
+  ## epi slope = 0.001933496 p=0.00000***, hypo slope = 0.001089569 p=0.30
   ## looks like some high erroneous DO readings are still in the data
   
