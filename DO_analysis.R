@@ -6,7 +6,7 @@
 #Calculate mean surface water and deep water depths for each lakes
 #surface is defined as the epilimnion
 #Deep water is defined as the hypolimnion, both present categorized in the layer column
-
+library(dplyr)
 # Grouping new df to still include relevant lake info
 #Take the mean of each group of DO by layer
 #Note, all of the other variables included here should be the same for each unique profiles,
@@ -50,15 +50,17 @@ Annual_Comb <- Annual_Comb %>%
   rename(Annual_Temp = Temp_mean_avg)
 
 
-###### Final Annual_Comb df should have 4431 obs of 14 variables
+###### Final Annual_Comb df should have 4431 obs of 15 variables
+  ####  with each MonitoringLocationIdentifier occurring =<1 time per year
+#Lots of problems here: I am not convinced I calculated DO sat correctly due to 1/3rd of 
+#the values being > 1
+
   ####  with each MonitoringLocationIdentifier occurring >=1 time per year
 
 ###############################################################################
-#############################-Begin-DO-Analysis-############################### 
+#############################-Begin-Analysis-##################################
 ###############################################################################
 
-#Lots of problems here, A, I am not convinced I calculated DO sat correctly due to 1/3rd of 
-#the values being > 1 and, B, I cannot get the TheilSen() function to work for the df... ugh
 install.packages("openair")
 library(openair)
 
@@ -155,20 +157,51 @@ head(Sens_Hypo_DOsat$data[[1]])
 #Slope of 0.0011 with an intercept of 0.72, but a p-value of 0.3
 
 
-## PETER CODE ########################################################
-##making required "date" field in as.Date format
+###################################################################################
+##Peter code for Sen's Slope ##
+###################################################################################
+
+##making required "date" field in as.Date format 
+##(DONT RUN THIS BLOCK if you already ran the same code above in ROB CODE section)
 ##openair package TheilSen function needs a "date" field in YYYY-mm-dd
+##Annual_Comb now will have 15 variables
 Annual_Comb$date <- as.Date(paste(Annual_Comb$Year, "08", "01", sep = "-"))
 Annual_Comb$date <- as.Date(Annual_Comb$date, format = "%d/%m/%Y")
-
-##now need to make one more change to the date format
+##now need to make one more change to the date format for TheilSen to run without errors
 library(lubridate) 
 Annual_Comb$date <- lubridate::ymd_hms(paste(Annual_Comb$date, "00:00:00"))
 
+##TEST SENS SLOPE (old code, don't need to use)
 ##do Sen's slope
-test_ts <- TheilSen(Annual_Comb, pollutant = "Annual_DO", deseason = FALSE)
-
+##test_ts <- TheilSen(Annual_Comb, pollutant = "Annual_DO", deseason = FALSE)
 ##see results
-test_ts$data[[2]]
-head(test_ts$data[[1]])
- 
+##test_ts$data[[2]]
+##head(test_ts$data[[1]])
+
+##SEN'S SLOPE
+ ##temp sens slope for each layer
+  temp_sens_epihypo <- TheilSen(Annual_Comb, pollutant = "Annual_Temp", type = "Layer", deseason = FALSE, ylab = "Temperature (C)")
+  ##results:
+    view(temp_sens_epihypo)
+    head(temp_sens_epihypo$data[[1]])
+    temp_sens_epihypo$data[[2]]
+    ## epi slope = 0.003483362 p=0.15, hypo slope = -0.013067869 p=0.22
+    
+ ##DO concentration sens slope for each layer
+  DOconc_sens_epihypo <- TheilSen(Annual_Comb, pollutant = "Annual_DO_Con", type = "Layer", deseason = FALSE, ylab = "Dissolved Oxygen (mg/L)")
+  ##results:
+  view(DOconc_sens_epihypo)
+  head(DOconc_sens_epihypo$data[[1]])
+  DOconc_sens_epihypo$data[[2]]
+  ## epi slope = 0.01730202 p=0.00000***, hypo slope = 0.01158640 p=0.22
+  ## looks like some high erroneous DO readings are still in the data 
+  
+ ##DO saturation sens slope for each layer
+  DOsat_sens_epihypo <- TheilSen(Annual_Comb, pollutant = "Annual_DO_Sat", type = "Layer", deseason = FALSE, ylab = "Dissolved Oxygen Percent Saturation (%)")
+  ##results:
+  view(DOsat_sens_epihypo)
+  head(DOsat_sens_epihypo$data[[1]])
+  DOsat_sens_epihypo$data[[2]]
+  ## epi slope = 0.001933496 p=0.00000***, hypo slope = 0.001089569 p=0.30
+  ## looks like some high erroneous DO readings are still in the data
+  
