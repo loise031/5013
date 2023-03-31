@@ -157,6 +157,61 @@ head(Sens_Hypo_DOsat$data[[1]])
 #Slope of 0.0011 with an intercept of 0.72, but a p-value of 0.3
 
 
+################################################################################
+##############################-Subsetting Years-################################
+################################################################################
+
+table(Annual_Comb$Year)
+#Subsetting from 1974-Present (Analysis above) and 1990-Present (Analysis here) per Jane et al.
+
+Annual_Comb_Epi_Sub <- subset(Annual_Comb_Epi, Year >= 1990) #Creates an df of all Epilimnion measurements post 1989
+Annual_Comb_Hypo_Sub <- subset(Annual_Comb_Hypo, Year >= 1990) #Same for the Hypolimnion
+
+#Post "89 Epilimnion DO conc:
+
+Sens_Epi_Sub_DOcon <- TheilSen(Annual_Comb_Epi_Sub, pollutant = "Annual_DO_Con", deseason = FALSE)
+Sens_Epi_Sub_DOcon$data[[2]]
+head(Sens_Epi_Sub_DOcon$data[[1]])
+# p-value: 0.007 Slope: 0.0109 Intercept: 6.833
+
+#Post "89 Hypolimnion DO conc:
+
+Sens_Hypo_Sub_DOcon <- TheilSen(Annual_Comb_Hypo_Sub, pollutant = "Annual_DO_Con", deseason = FALSE)
+Sens_Hypo_Sub_DOcon$data[[2]]
+head(Sens_Hypo_Sub_DOcon$data[[1]])
+# p-value: 0.387 Slope: 0.0101 Intercept: 6.276
+
+#Post "89 Epilimnion DO sat:
+
+Sens_Epi_Sub_DOsat <- TheilSen(Annual_Comb_Epi_Sub, pollutant = "Annual_DO_Sat", deseason = FALSE)
+Sens_Epi_Sub_DOsat$data[[2]]
+head(Sens_Epi_Sub_DOsat$data[[1]])
+# p-value: 0.007 Slope: 0.00101 Intercept: 0.7767
+
+#Post "89 Hypolimnion DO sat:
+
+Sens_Hypo_Sub_DOsat <- TheilSen(Annual_Comb_Hypo_Sub, pollutant = "Annual_DO_Sat", deseason = FALSE)
+Sens_Hypo_Sub_DOsat$data[[2]]
+head(Sens_Hypo_Sub_DOsat$data[[1]])
+# p-value: 0.52 Slope: 0.0008 Intercept: 0.733
+
+#Post "89 Hypolimnion Temp:
+
+Sens_Epi_Sub_Temp <- TheilSen(Annual_Comb_Epi_Sub, pollutant = "Annual_Temp", deseason = FALSE)
+Sens_Epi_Sub_Temp$data[[2]]
+head(Sens_Epi_Sub_Temp$data[[1]])
+# p-value: 0.614 Slope: 0.00172 Intercept: 18.850
+
+#Post "89 Hypolimnion Temp:
+
+Sens_Hypo_Sub_Temp <- TheilSen(Annual_Comb_Hypo_Sub, pollutant = "Annual_Temp", deseason = FALSE)
+Sens_Hypo_Sub_Temp$data[[2]]
+head(Sens_Hypo_Sub_Temp$data[[1]])
+# p-value:0.0834 Slope: -0.021 Intercept: 19.740
+
+mean(Annual_Comb_Epi_Sub$Annual_Temp) #Mean: 18.79
+mean(Annual_Comb_Hypo_Sub$Annual_Temp) #Mean: 19.07
+
 ###################################################################################
 ##Peter code for Sen's Slope ##
 ###################################################################################
