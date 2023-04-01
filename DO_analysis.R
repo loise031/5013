@@ -254,7 +254,7 @@ Annual_Comb$date <- lubridate::ymd_hms(paste(Annual_Comb$date, "00:00:00"))
     view(temp_sens_epihypo)
     head(temp_sens_epihypo$data[[1]])
     temp_sens_epihypo$data[[2]]
-    ## epi slope = 0.003483362 p=0.15, hypo slope = -0.013067869 p=0.22
+    ## epi slope = 0.019753831 p=0.00000 (***), hypo slope = -0.003304753 p=0.80 ()
     
  ##DO concentration sens slope for each layer
   DOconc_sens_epihypo <- TheilSen(Annual_Comb, pollutant = "Annual_DO_Con", type = "Layer", deseason = FALSE, ylab = "Dissolved Oxygen (mg/L)")
@@ -262,8 +262,9 @@ Annual_Comb$date <- lubridate::ymd_hms(paste(Annual_Comb$date, "00:00:00"))
   view(DOconc_sens_epihypo)
   head(DOconc_sens_epihypo$data[[1]])
   DOconc_sens_epihypo$data[[2]]
-  ## epi slope = 0.01730202 p=0.00000***, hypo slope = 0.01158640 p=0.22
-  ## looks like some high erroneous DO readings are still in the data 
+  ## epi slope = 0.002072882 p=0.60(), hypo slope = 0.004304802 p=0.86 ()
+  ## setting filter from 40 mgL to 20 mgL removed 17 readings from the 40mgL filtered dataset, or 17 readings >20 and <40,
+      ## which were affecting annual means, now there is no significant positive trend in the epi as there was in the unfiltered dataset
   
  ##DO saturation sens slope for each layer
   DOsat_sens_epihypo <- TheilSen(Annual_Comb, pollutant = "Annual_DO_Sat", type = "Layer", deseason = FALSE, ylab = "Dissolved Oxygen Percent Saturation (%)")
@@ -271,6 +272,66 @@ Annual_Comb$date <- lubridate::ymd_hms(paste(Annual_Comb$date, "00:00:00"))
   view(DOsat_sens_epihypo)
   head(DOsat_sens_epihypo$data[[1]])
   DOsat_sens_epihypo$data[[2]]
-  ## epi slope = 0.001933496 p=0.00000***, hypo slope = 0.001089569 p=0.30
-  ## looks like some high erroneous DO readings are still in the data
+  ## epi slope = 0.0005538740 p=0.23(), hypo slope = 0.0008482614 p=0.72()
+  ## setting filter from 40 mgL to 20 mgL removed 17 readings from the 40mgL filtered dataset, or 17 readings >20 and <40,
+  ##   which were affecting annual means, now there is no significant positive trend in the epi as there was in the unfiltered dataset
   
+## Now breaking up by layer and by state after using code at top of morans i script to make
+ ## Annual_Comb_Epi and Annual_Comb_Hypo dataframes.
+ ## Mainly interested in finding if there are MN specific long term trends
+  
+ ## Epi temp sens separated by state
+   temp_sens_epi_state <- TheilSen(Annual_Comb_Epi, pollutant = "Annual_Temp", type = "State", deseason = FALSE, ylab = "Epilimnion Temperature (C)")
+   ## Results:
+   view(temp_sens_epi_state)
+   head(temp_sens_epi_state$data[[1]])
+   temp_sens_epi_state$data[[2]]
+   ##MI: p=0.92
+   ##MN: p = 0.01 (*), slope = 0.010760215
+   ##WI: p = 0.00000 (***), slope = 0.045095150
+   ##According to this, MN and WI epi both significantly warming, WI at a ~4x faster rate
+   
+ ##Hypo temp sens separated by state
+   temp_sens_hypo_state <- TheilSen(Annual_Comb_Hypo, pollutant = "Annual_Temp", type = "State", deseason = FALSE, ylab = "Hypolimnion Temperature (C)")
+   ## Results:
+   view(temp_sens_hypo_state)
+   head(temp_sens_hypo_state$data[[1]])
+   temp_sens_hypo_state$data[[2]]
+   ##Not enough data for MI or WI, slope and p NaN
+   ##For MN, p = 0.73 ()
+   
+ ##Epi DO conc sens separated by state
+   doconc_sens_epi_state <- TheilSen(Annual_Comb_Epi, pollutant = "Annual_DO_Con", type = "State", deseason = FALSE, ylab = "Epilimnion [DO] (mg/L)")
+   ## Results:
+   view(doconc_sens_epi_state)
+   head(doconc_sens_epi_state$data[[1]])
+   doconc_sens_epi_state$data[[2]]
+   ##MI: p=0.47
+   ##MN: p = 0.007 (**), slope = 0.007589949
+   ##WI: p = 0.00000 (***), slope = -0.031027407
+   ##According to this, MN epi DO conc on significant slightly increasing trend,
+   ##and WI epi DO conc on significant decreasing trend
+   ##Interesting, because no significant epi DO conc trend in combined tristate dataset - WI and MN cancel out??
+   
+ ##Hypo DO conc sens separated by state
+   doconc_sens_hypo_state <- TheilSen(Annual_Comb_Hypo, pollutant = "Annual_DO_Con", type = "State", deseason = FALSE, ylab = "Hypolimnion [DO] (mg/L)")
+   ## Results:
+   view(doconc_sens_hypo_state)
+   head(doconc_sens_hypo_state$data[[1]])
+   doconc_sens_hypo_state$data[[2]]
+   ##Not enough data for MI or WI, slope and p NaN
+   ##For MN, p = 0.47 ()
+   
+ ##Epi DO sat sens separated by state
+   dosat_sens_epi_state <- TheilSen(Annual_Comb_Epi, pollutant = "Annual_DO_Sat", type = "State", deseason = FALSE, ylab = "Epilimnion DO % Saturation")
+   ## Results:
+   view(dosat_sens_epi_state)
+   head(dosat_sens_epi_state$data[[1]])
+   dosat_sens_epi_state$data[[2]]
+   ##MI: p=0.58
+   ##MN: p = 0.00000 (***), slope = 0.001218194
+   ##WI: p = 0.00000 (***), slope = -0.003100565
+   ##According to this, MN epi DO sat on significant slightly increasing trend,
+   ##and WI epi DO sat on significant decreasing trend
+   ##Interesting, because no significant epi DO sat trend in combined tristate dataset - WI and MN cancel out??
+   
