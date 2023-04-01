@@ -45,6 +45,59 @@ Comb_Lakes$Layer <-  ifelse(Comb_Lakes$Depth < Comb_Lakes$top.meta, "Epilimnion"
                                 ifelse(Comb_Lakes$Depth < Comb_Lakes$top.hypo, 
                                        "Hypolimnion", "Metalimnion"))
 
+
+#Next step is to filter for only August values
+
+#Creates a POSIX date column in the df
+Comb_Lakes$Date <- as.POSIXct(paste(Comb_Lakes$Year, Comb_Lakes$DOY, sep = "-"), format = "%Y-%j")
+
+library(lubridate)        #Allows me to extract a month out of my POSIX value 
+
+start_date <- ymd("2022-07-15") #Beginning of compariable measurements
+end_date <- ymd("2022-08-31") #End of compariable measurements
+Comb_Lakes_Aug <- Comb_Lakes[month(Comb_Lakes$Date) == month(start_date) & day(Comb_Lakes$Date) >= day(start_date) | 
+                                  month(Comb_Lakes$Date) == month(end_date) & day(Comb_Lakes$Date) <= day(end_date), ]
+
+
+#Now follow methods from Jane et al
+
+#Removing all temp and DO values outside of 0-40
+
+summary(Comb_Lakes_Aug$DO) #This column has data outside of both bounds
+
+summary(Comb_Lakes$Temperature) #This column has data below 0º C
+
+#Subset for temp and DO to be within 0 and 40
+
+Comb_Lakes_Aug <- subset(Comb_Lakes_Aug, Temperature >= 0 & Temperature <= 40)
+summary(Comb_Lakes_Aug$Temperature) #Confirming
+
+Comb_Lakes_Aug <- subset(Comb_Lakes_Aug, DO >= 0 & DO <= 40)
+summary(Comb_Lakes_Aug$DO) #Confirming
+
+#Filtering so that locations are only included if they have a unique value for a minimum of 15 years:
+#Code is written so the years do not have to be consecutive 
+
+Comb_Lakes_Aug_Counts <- Comb_Lakes_Aug %>%
+  group_by(MonitoringLocationIdentifier, Year) %>% 
+  summarize(n_temps = sum(Temperature > 0)) %>% #calculates the number of temperature measurements that are greater than 0 for each combination of location and year
+  ungroup()
+
+
+Comb_Lakes_Aug_Counts <- Comb_Lakes_Aug_Counts %>%
+  group_by(MonitoringLocationIdentifier) %>%
+  summarize(n_years = sum(n_temps > 0)) %>% #calculates the number of years with at least one temperature measurement for each location
+  filter(n_years >= 15) %>% #Only include locations with >= 15 years
+  select(MonitoringLocationIdentifier) # Resulting df only lists locations that have 15 years of data
+
+#Only includes lakes with 15 years of data as determined by previous sub setting
+Comb_Lakes_AugY <- subset(Comb_Lakes_Aug,
+                         MonitoringLocationIdentifier %in% Comb_Lakes_Aug_Counts$MonitoringLocationIdentifier)
+
+#Rename for the filtered comb lakes
+Comb_Lakes <- Comb_Lakes_AugY
+
+
 #Now I need to add elevation data:
 
 library(readr)
@@ -76,6 +129,9 @@ table(is.na(Comb_Lakes$Elevation_m))
 
 #Calculate DO saturation for each value
 
+
+
+
 library(rMR) #Package used to calculate DO Saturation
 
 #Adds at DO saturation column to the data frame
@@ -86,7 +142,14 @@ Comb_Lakes$DO_saturation <- DO.saturation(DO = Comb_Lakes$DO,
 summary(Comb_Lakes$DO_saturation)
 #Pretty wild saturation values here....
 
-write.csv(Comb_Lakes, "Comb_Lakes.csv")
+#Analyzing DO calcualtions:
+
+sum(Comb_Lakes$DO_saturation > 1)
+
+
+#Final output for Comb_Lakes, 147653 obs of 19 variables
+
+#write.csv(Comb_Lakes, "Comb_Lakes.csv")
 
 
 
