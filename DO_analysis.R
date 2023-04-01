@@ -1,6 +1,6 @@
 #DO trends in the Comb_Lakes dataframe
 #Requires previously running the Comb_Lakes_Script for the df
-#Should have 946949 obs of 16 variables
+#Should have 147653 obs of 19 variables
 
 
 #Calculate mean surface water and deep water depths for each lakes
@@ -49,8 +49,10 @@ Annual_Comb <- Annual_Comb %>%
   rename(Annual_DO_Sat = DO_sat_mean_avg) %>%
   rename(Annual_Temp = Temp_mean_avg)
 
+mean(Annual_Comb_Epi$Annual_Temp)
+mean(Annual_Comb_Hypo$Annual_Temp)
 
-###### Final Annual_Comb df should have 4431 obs of 15 variables
+###### Final Annual_Comb df should have 1424 obs of 14 variables
   ####  with each MonitoringLocationIdentifier occurring =<1 time per year
 #Lots of problems here: I am not convinced I calculated DO sat correctly due to 1/3rd of 
 #the values being > 1
@@ -85,7 +87,7 @@ test_ts <- TheilSen(Annual_Comb, pollutant = "Annual_DO_Con", deseason = FALSE)
 ##see results
 test_ts$data[[2]]
 head(test_ts$data[[1]])
-
+#p value of 0.628 slope of 0.0015, intercept of 5.40
 
 test_ts <- TheilSen(Annual_Comb, pollutant = "Annual_DO_Con", deseason = FALSE, xlab = "Year",
          ylab = "DO Concentration (mg/l)")
@@ -111,7 +113,19 @@ test_ts_temp <- TheilSen(Annual_Comb, pollutant = "Annual_Temp", deseason = FALS
 ##see results
 test_ts_temp$data[[2]]
 head(test_ts_temp$data[[1]])
+#p value = 0, slope = 0.0186, intercept: 20.67503
 
+##do Sen's slope
+test_ts_DO_Sat <- TheilSen(Annual_Comb, pollutant = "Annual_DO_Sat", deseason = FALSE)
+
+##see results
+test_ts_DO_Sat$data[[2]]
+head(test_ts_DO_Sat$data[[1]])
+#p value = 0.260, slope = 0.000049, intercept: 0.656
+
+###############################################################################
+############################-Layer-Separation-#################################
+###############################################################################
 
 #Seems like there's almost no trend, what if I separate layers:
 # Create and Epilimnion value df
@@ -124,37 +138,37 @@ Annual_Comb_Hypo <- subset(Annual_Comb, Layer == "Hypolimnion")
 Sens_Epi_DOcon <- TheilSen(Annual_Comb_Epi, pollutant = "Annual_DO_Con", deseason = FALSE)
 Sens_Epi_DOcon$data[[2]]
 head(Sens_Epi_DOcon$data[[1]])
-#This has a slope of 0.0173 and an intercept of 6.500, with a *** p value
+#This has a slope of 0.0021 and an intercept of 5.40, with a p value of 0.604
 
 #Hypo DO Con Sens
 Sens_Hypo_DOcon <- TheilSen(Annual_Comb_Hypo, pollutant = "Annual_DO_Con", deseason = FALSE)
 Sens_Hypo_DOcon$data[[2]]
 head(Sens_Hypo_DOcon$data[[1]])
-#Slope of 0.01159 with an intercept of 6.220, but a p-value of 0.26
+#Slope of 0.00366with an intercept of 4.7720, but a p-value of 0.841
 
 #Epi Temp Sens
 Sens_Epi_Temp <- TheilSen(Annual_Comb_Epi, pollutant = "Annual_Temp", deseason = FALSE)
 Sens_Epi_Temp$data[[2]]
 head(Sens_Epi_Temp$data[[1]])
-#Slope of 0.00348 with an intercept of 18.63, but a p-value of 0.160
+#Slope of 0.020 with an intercept of 20.305, with a p-value of 0
 
 #Hypo Temp Sens
 Sens_Hypo_Temp <- TheilSen(Annual_Comb_Hypo, pollutant = "Annual_Temp", deseason = FALSE)
 Sens_Hypo_Temp$data[[2]]
 head(Sens_Hypo_Temp$data[[1]])
-#Slope of -0.0131 with an intercept of 19.41, but a p value of 0.194
+#Slope of -0.00321 with an intercept of 21.07, but a p value of 0.804
 
 #Epi DO Sat Sens
 Sens_Epi_DOsat <- TheilSen(Annual_Comb_Epi, pollutant = "Annual_DO_Sat", deseason = FALSE)
 Sens_Epi_DOsat$data[[2]]
 head(Sens_Epi_DOsat$data[[1]])
-#This has a slope of 0.0173 and an intercept of 6.500, with a *** p value
+#This has a slope of 0.00055 and an intercept of 0.6500, with a 0.234 p value
 
 #Hypo DO Sat Sens
 Sens_Hypo_DOsat <- TheilSen(Annual_Comb_Hypo, pollutant = "Annual_DO_Sat", deseason = FALSE)
 Sens_Hypo_DOsat$data[[2]]
 head(Sens_Hypo_DOsat$data[[1]])
-#Slope of 0.0011 with an intercept of 0.72, but a p-value of 0.3
+#Slope of 0.0009 with an intercept of 0.58, but a p-value of 0.715
 
 
 ################################################################################
@@ -172,45 +186,45 @@ Annual_Comb_Hypo_Sub <- subset(Annual_Comb_Hypo, Year >= 1990) #Same for the Hyp
 Sens_Epi_Sub_DOcon <- TheilSen(Annual_Comb_Epi_Sub, pollutant = "Annual_DO_Con", deseason = FALSE)
 Sens_Epi_Sub_DOcon$data[[2]]
 head(Sens_Epi_Sub_DOcon$data[[1]])
-# p-value: 0.007 Slope: 0.0109 Intercept: 6.833
+# p-value: 0.734 Slope: -0.0107 Intercept: 5.538
 
 #Post "89 Hypolimnion DO conc:
 
 Sens_Hypo_Sub_DOcon <- TheilSen(Annual_Comb_Hypo_Sub, pollutant = "Annual_DO_Con", deseason = FALSE)
 Sens_Hypo_Sub_DOcon$data[[2]]
 head(Sens_Hypo_Sub_DOcon$data[[1]])
-# p-value: 0.387 Slope: 0.0101 Intercept: 6.276
+# p-value: 0.98 Slope: 0.00017 Intercept: 4.95
 
 #Post "89 Epilimnion DO sat:
 
 Sens_Epi_Sub_DOsat <- TheilSen(Annual_Comb_Epi_Sub, pollutant = "Annual_DO_Sat", deseason = FALSE)
 Sens_Epi_Sub_DOsat$data[[2]]
 head(Sens_Epi_Sub_DOsat$data[[1]])
-# p-value: 0.007 Slope: 0.00101 Intercept: 0.7767
+# p-value: 0.80 Slope: 0.00017 Intercept: 0.6744
 
 #Post "89 Hypolimnion DO sat:
 
 Sens_Hypo_Sub_DOsat <- TheilSen(Annual_Comb_Hypo_Sub, pollutant = "Annual_DO_Sat", deseason = FALSE)
 Sens_Hypo_Sub_DOsat$data[[2]]
 head(Sens_Hypo_Sub_DOsat$data[[1]])
-# p-value: 0.52 Slope: 0.0008 Intercept: 0.733
+# p-value: 0.905 Slope: 0.00030 Intercept: 0.602
 
 #Post "89 Hypolimnion Temp:
 
 Sens_Epi_Sub_Temp <- TheilSen(Annual_Comb_Epi_Sub, pollutant = "Annual_Temp", deseason = FALSE)
 Sens_Epi_Sub_Temp$data[[2]]
 head(Sens_Epi_Sub_Temp$data[[1]])
-# p-value: 0.614 Slope: 0.00172 Intercept: 18.850
+# p-value: 0.0068 Slope: 0.0132 Intercept: 30.589
 
 #Post "89 Hypolimnion Temp:
 
 Sens_Hypo_Sub_Temp <- TheilSen(Annual_Comb_Hypo_Sub, pollutant = "Annual_Temp", deseason = FALSE)
 Sens_Hypo_Sub_Temp$data[[2]]
 head(Sens_Hypo_Sub_Temp$data[[1]])
-# p-value:0.0834 Slope: -0.021 Intercept: 19.740
+# p-value:0.755 Slope: -0.0007 Intercept: 21.22
 
-mean(Annual_Comb_Epi_Sub$Annual_Temp) #Mean: 18.79
-mean(Annual_Comb_Hypo_Sub$Annual_Temp) #Mean: 19.07
+mean(Annual_Comb_Epi_Sub$Annual_Temp) #Mean: 21.03
+mean(Annual_Comb_Hypo_Sub$Annual_Temp) #Mean: 20.81
 
 ###################################################################################
 ##Peter code for Sen's Slope ##
