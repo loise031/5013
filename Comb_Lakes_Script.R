@@ -72,8 +72,8 @@ summary(Comb_Lakes$Temperature) #This column has data below 0º C
 Comb_Lakes_Aug <- subset(Comb_Lakes_Aug, Temperature >= 0 & Temperature <= 40)
 summary(Comb_Lakes_Aug$Temperature) #Confirming
 
-Comb_Lakes_Aug <- subset(Comb_Lakes_Aug, DO >= 0 & DO <= 40)
-summary(Comb_Lakes_Aug$DO) #Confirming
+Comb_Lakes_Aug <- subset(Comb_Lakes_Aug, DO >= 0 & DO <= 20) ##CHANGED 4/1/23, 100% sat at 0.1C is 14.6 so this allows for supersaturation within reasonable limits
+summary(Comb_Lakes_Aug$DO) #Confirming                         ##old data had values <30
 
 #Filtering so that locations are only included if they have a unique value for a minimum of 15 years:
 #Code is written so the years do not have to be consecutive 
