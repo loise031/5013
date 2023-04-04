@@ -36,7 +36,7 @@ summary(is.na(merged_comb_lakes_test$Lagos_Name))
 ###############################################################################
 
 
-#The following code is chatGPT generated
+#The following code is chatGPT or helped from chatGPT generated code
 ###############################################################################
 # Create a vector to store the unique identifiers for each MonitoringLocationIdentifier
 unique_ids <- unique(merged_comb_lakes_test$MonitoringLocationIdentifier)
@@ -140,11 +140,48 @@ length(unique(merged_comb_lakes_test$Lagos_Name))
 
 Comb_Lakes <- merged_comb_lakes_test
 
+#Reordering the Lake Names
+Comb_Lakes <- Comb_Lakes %>%
+  select(...1, MonitoringLocationIdentifier, State, Lagos_Name, everything())
+
+#Renaming the DO column so it is DO concentration
+
+colnames(Comb_Lakes)[colnames(Comb_Lakes)=="DO"] <- "DO_Con"
+colnames(Comb_Lakes)[colnames(Comb_Lakes)=="DO_saturation"] <- "DO_Sat"
+colnames(Comb_Lakes)[colnames(Comb_Lakes)=="Date"] <- "date"
 
 
 
+#Comb_Lakes$date <- as.Date(Comb_Lakes$date, format = "%d/%m/%Y")
+##now need to make one more change to the date format for TheilSen to run without errors
+#library(lubridate) 
+#Comb_Lakes$date <- lubridate::ymd_hms(paste(Comb_Lakes$date, "00:00:00"))
 
 
+###############################################################################
+###########################-Individual-Trend-Analysis-#########################
+###############################################################################
+
+#DO Concentration Trends
+Sens_Individual_DO_Con <- TheilSen(Comb_Lakes, pollutant = "DO_Con", 
+                              type = "Lagos_Name", deseason = FALSE,
+                              xlab = "year", ylab = "DO Con")
+Sens_Individual_DO_Con$data[[2]]
+head(Sens_Individual_DO_Con$data[[1]])
+#This has a slope of 0.0021 and an intercept of 5.40, with a p value of 0.604
+
+Sens_Individual_DO_Con_df <- data.frame(Sens_Individual_DO_Con$data[[2]])
+
+
+#DO Saturation Trends
+Sens_Individual_DO_Sat <- TheilSen(Comb_Lakes, pollutant = "DO_Sat", 
+                                   type = "Lagos_Name", deseason = FALSE,
+                                   xlab = "year", ylab = "DO Sat")
+Sens_Individual_DO_Sat$data[[2]]
+head(Sens_Individual_DO_Sat$data[[1]])
+#This has a slope of 0.0021 and an intercept of 5.40, with a p value of 0.604
+
+Sens_Individual_DO_Sat_df <- data.frame(Sens_Individual_DO_Sat$data[[2]])
 
 
 
