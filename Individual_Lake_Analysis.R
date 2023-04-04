@@ -168,7 +168,7 @@ Sens_Individual_DO_Con <- TheilSen(Comb_Lakes, pollutant = "DO_Con",
                               xlab = "year", ylab = "DO Con")
 Sens_Individual_DO_Con$data[[2]]
 head(Sens_Individual_DO_Con$data[[1]])
-#This has a slope of 0.0021 and an intercept of 5.40, with a p value of 0.604
+
 
 Sens_Individual_DO_Con_df <- data.frame(Sens_Individual_DO_Con$data[[2]])
 
@@ -179,7 +179,7 @@ Sens_Individual_DO_Sat <- TheilSen(Comb_Lakes, pollutant = "DO_Sat",
                                    xlab = "year", ylab = "DO Sat")
 Sens_Individual_DO_Sat$data[[2]]
 head(Sens_Individual_DO_Sat$data[[1]])
-#This has a slope of 0.0021 and an intercept of 5.40, with a p value of 0.604
+
 
 Sens_Individual_DO_Sat_df <- data.frame(Sens_Individual_DO_Sat$data[[2]])
 
@@ -190,7 +190,7 @@ Sens_Individual_Temp <- TheilSen(Comb_Lakes, pollutant = "Temperature",
                                    xlab = "year", ylab = "Temperature")
 Sens_Individual_Temp$data[[2]]
 head(Sens_Individual_Temp$data[[1]])
-#This has a slope of 0.0021 and an intercept of 5.40, with a p value of 0.604
+
 
 Sens_Individual_Temp_df <- data.frame(Sens_Individual_Temp$data[[2]])
 
@@ -208,7 +208,7 @@ Sens_Individual_DO_Con_Epi <- TheilSen(Comb_Lakes_Epi, pollutant = "DO_Con",
                                    xlab = "year", ylab = "DO Con")
 Sens_Individual_DO_Con_Epi$data[[2]]
 head(Sens_Individual_DO_Con_Epi$data[[1]])
-#This has a slope of 0.0021 and an intercept of 5.40, with a p value of 0.604
+
 
 Sens_Individual_DO_Con_Epi_df <- data.frame(Sens_Individual_DO_Con_Epi$data[[2]])
 
@@ -219,7 +219,7 @@ Sens_Individual_DO_Sat_Epi <- TheilSen(Comb_Lakes_Epi, pollutant = "DO_Sat",
                                    xlab = "year", ylab = "DO Sat")
 Sens_Individual_DO_Sat_Epi$data[[2]]
 head(Sens_Individual_DO_Sat_Epi$data[[1]])
-#This has a slope of 0.0021 and an intercept of 5.40, with a p value of 0.604
+
 
 Sens_Individual_DO_Sat_Epi_df <- data.frame(Sens_Individual_DO_Sat_Epi$data[[2]])
 
@@ -230,7 +230,7 @@ Sens_Individual_Temp_Epi <- TheilSen(Comb_Lakes_Epi, pollutant = "Temperature",
                                  xlab = "year", ylab = "Temperature")
 Sens_Individual_Temp_Epi$data[[2]]
 head(Sens_Individual_Temp_Epi$data[[1]])
-#This has a slope of 0.0021 and an intercept of 5.40, with a p value of 0.604
+
 
 Sens_Individual_Temp_Epi_df <- data.frame(Sens_Individual_Temp_Epi$data[[2]])
 
@@ -242,7 +242,7 @@ Sens_Individual_DO_Con_Hypo <- TheilSen(Comb_Lakes_Hypo, pollutant = "DO_Con",
                                        xlab = "year", ylab = "DO Con")
 Sens_Individual_DO_Con_Hypo$data[[2]]
 head(Sens_Individual_DO_Con_Hypo$data[[1]])
-#This has a slope of 0.0021 and an intercept of 5.40, with a p value of 0.604
+
 
 Sens_Individual_DO_Con_Hypo_df <- data.frame(Sens_Individual_DO_Con_Hypo$data[[2]])
 
@@ -253,7 +253,7 @@ Sens_Individual_DO_Sat_Hypo <- TheilSen(Comb_Lakes_Hypo, pollutant = "DO_Sat",
                                        xlab = "year", ylab = "DO Sat")
 Sens_Individual_DO_Sat_Hypo$data[[2]]
 head(Sens_Individual_DO_Sat_Hypo$data[[1]])
-#This has a slope of 0.0021 and an intercept of 5.40, with a p value of 0.604
+
 
 Sens_Individual_DO_Sat_Hypo_df <- data.frame(Sens_Individual_DO_Sat_Hypo$data[[2]])
 
@@ -264,7 +264,7 @@ Sens_Individual_Temp_Hypo <- TheilSen(Comb_Lakes_Hypo, pollutant = "Temperature"
                                      xlab = "year", ylab = "Temperature")
 Sens_Individual_Temp_Hypo$data[[2]]
 head(Sens_Individual_Temp_Hypo$data[[1]])
-#This has a slope of 0.0021 and an intercept of 5.40, with a p value of 0.604
+
 
 Sens_Individual_Temp_Hypo_df <- data.frame(Sens_Individual_Temp_Hypo$data[[2]])
 
