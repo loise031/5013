@@ -2,7 +2,7 @@
 
 #This df is a result of Comb_Lakes_Script and DO_analysis:
 Comb_Lakes
-#Should have 147653 obs. of 19 variables
+#Should have 147636 obs. of 19 variables
 
 #Importing the csv needed to add lake names to the Comb_Lakes df
 
