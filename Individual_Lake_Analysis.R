@@ -184,14 +184,118 @@ head(Sens_Individual_DO_Sat$data[[1]])
 Sens_Individual_DO_Sat_df <- data.frame(Sens_Individual_DO_Sat$data[[2]])
 
 
+#Temp Trends
+Sens_Individual_Temp <- TheilSen(Comb_Lakes, pollutant = "Temperature", 
+                                   type = "Lagos_Name", deseason = FALSE,
+                                   xlab = "year", ylab = "Temperature")
+Sens_Individual_Temp$data[[2]]
+head(Sens_Individual_Temp$data[[1]])
+#This has a slope of 0.0021 and an intercept of 5.40, with a p value of 0.604
+
+Sens_Individual_Temp_df <- data.frame(Sens_Individual_Temp$data[[2]])
+
+#Layer Breakdown
+##########################################################################
+
+# Create and Epilimnion value df
+Comb_Lakes_Epi <- subset(Comb_Lakes_Epi, Layer == "Epilimnion")
+# Create a Hypolimnion value df
+Comb_Lakes_Hypo <- subset(Comb_Lakes_Hypo, Layer == "Hypolimnion")
+
+#DO Concentration Trends Epi
+Sens_Individual_DO_Con_Epi <- TheilSen(Comb_Lakes_Epi, pollutant = "DO_Con", 
+                                   type = "Lagos_Name", deseason = FALSE,
+                                   xlab = "year", ylab = "DO Con")
+Sens_Individual_DO_Con_Epi$data[[2]]
+head(Sens_Individual_DO_Con_Epi$data[[1]])
+#This has a slope of 0.0021 and an intercept of 5.40, with a p value of 0.604
+
+Sens_Individual_DO_Con_Epi_df <- data.frame(Sens_Individual_DO_Con_Epi$data[[2]])
 
 
+#DO Saturation Epi Trends
+Sens_Individual_DO_Sat_Epi <- TheilSen(Comb_Lakes_Epi, pollutant = "DO_Sat", 
+                                   type = "Lagos_Name", deseason = FALSE,
+                                   xlab = "year", ylab = "DO Sat")
+Sens_Individual_DO_Sat_Epi$data[[2]]
+head(Sens_Individual_DO_Sat_Epi$data[[1]])
+#This has a slope of 0.0021 and an intercept of 5.40, with a p value of 0.604
+
+Sens_Individual_DO_Sat_Epi_df <- data.frame(Sens_Individual_DO_Sat_Epi$data[[2]])
 
 
+#Temp Epi Trends
+Sens_Individual_Temp_Epi <- TheilSen(Comb_Lakes_Epi, pollutant = "Temperature", 
+                                 type = "Lagos_Name", deseason = FALSE,
+                                 xlab = "year", ylab = "Temperature")
+Sens_Individual_Temp_Epi$data[[2]]
+head(Sens_Individual_Temp_Epi$data[[1]])
+#This has a slope of 0.0021 and an intercept of 5.40, with a p value of 0.604
+
+Sens_Individual_Temp_Epi_df <- data.frame(Sens_Individual_Temp_Epi$data[[2]])
+
+###############Hypo
+
+#DO Concentration Hypo Trends
+Sens_Individual_DO_Con_Hypo <- TheilSen(Comb_Lakes_Hypo, pollutant = "DO_Con", 
+                                       type = "Lagos_Name", deseason = FALSE,
+                                       xlab = "year", ylab = "DO Con")
+Sens_Individual_DO_Con_Hypo$data[[2]]
+head(Sens_Individual_DO_Con_Hypo$data[[1]])
+#This has a slope of 0.0021 and an intercept of 5.40, with a p value of 0.604
+
+Sens_Individual_DO_Con_Hypo_df <- data.frame(Sens_Individual_DO_Con_Hypo$data[[2]])
 
 
+#DO Saturation Hypo Trends
+Sens_Individual_DO_Sat_Hypo <- TheilSen(Comb_Lakes_Hypo, pollutant = "DO_Sat", 
+                                       type = "Lagos_Name", deseason = FALSE,
+                                       xlab = "year", ylab = "DO Sat")
+Sens_Individual_DO_Sat_Hypo$data[[2]]
+head(Sens_Individual_DO_Sat_Hypo$data[[1]])
+#This has a slope of 0.0021 and an intercept of 5.40, with a p value of 0.604
+
+Sens_Individual_DO_Sat_Hypo_df <- data.frame(Sens_Individual_DO_Sat_Hypo$data[[2]])
 
 
+#Temp Hypo Trends
+Sens_Individual_Temp_Hypo <- TheilSen(Comb_Lakes_Hypo, pollutant = "Temperature", 
+                                     type = "Lagos_Name", deseason = FALSE,
+                                     xlab = "year", ylab = "Temperature")
+Sens_Individual_Temp_Hypo$data[[2]]
+head(Sens_Individual_Temp_Hypo$data[[1]])
+#This has a slope of 0.0021 and an intercept of 5.40, with a p value of 0.604
+
+Sens_Individual_Temp_Hypo_df <- data.frame(Sens_Individual_Temp_Hypo$data[[2]])
+
+#Merging all of this data into one data frame
+#################################################################
+
+#Removing the odd rows (Duplicates with NA's)
+
+df_list <- list(Sens_Individual_DO_Con_df, Sens_Individual_DO_Sat_df,
+                Sens_Individual_Temp_df, Sens_Individual_DO_Con_Epi_df,
+                Sens_Individual_DO_Sat_Epi_df, Sens_Individual_Temp_Epi_df,
+                Sens_Individual_DO_Con_Hypo_df, Sens_Individual_DO_Sat_Hypo_df,
+                Sens_Individual_Temp_Hypo_df) # List of data frames
+
+for (i in 1:length(df_list)) {
+  df_list[[i]] <- df_list[[i]][seq(1, nrow(df_list[[i]]), by=2),] # Remove even rows
+  rownames(df_list[[i]]) <- 1:nrow(df_list[[i]]) # Renumber rows
+}
+
+#I visually confirmed this worked how I wanted it to.
+
+
+Individual_Comb_Sens <- do.call(rbind, df_list) #Combine each df together
+
+source_analysis <- c("DO_Con_T", "DO_Sat_T", "Temp_T", "DO_Con_Epi", "DO_Sat_Epi",
+              "Temp_Epi", "DO_Con_Hypo", "DO_Sat_Hypo", "Temp_Hypo") #Creates column relevant to which analysis type was done
+Individual_Comb_Sens$Analysis <- rep(source_analysis, sapply(df_list, nrow)) #Inserts them via their source df
+
+#Reordering the Lake Names
+Individual_Comb_Sens <- Individual_Comb_Sens %>%
+  select(Analysis, Lagos_Name, p.stars, p, slope, everything())
 
 
 
