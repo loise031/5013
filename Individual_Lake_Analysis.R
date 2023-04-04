@@ -293,11 +293,11 @@ source_analysis <- c("DO_Con_T", "DO_Sat_T", "Temp_T", "DO_Con_Epi", "DO_Sat_Epi
               "Temp_Epi", "DO_Con_Hypo", "DO_Sat_Hypo", "Temp_Hypo") #Creates column relevant to which analysis type was done
 Individual_Comb_Sens$Analysis <- rep(source_analysis, sapply(df_list, nrow)) #Inserts them via their source df
 
-#Reordering the Lake Names
+#Reordering the column names
 Individual_Comb_Sens <- Individual_Comb_Sens %>%
-  select(Analysis, Lagos_Name, p.stars, p, slope, everything())
+  select(Analysis, Lagos_Name, p.stars, p, slope,intercept, everything())
 
-
+sum(Individual_Comb_Sens$p < 0.05) #There are 99 significant trends
 
 
 
