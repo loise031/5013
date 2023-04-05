@@ -161,6 +161,7 @@ colnames(Comb_Lakes)[colnames(Comb_Lakes)=="Date"] <- "date"
 ###############################################################################
 ###########################-Individual-Trend-Analysis-#########################
 ###############################################################################
+library(openair)
 
 #DO Concentration Trends
 Sens_Individual_DO_Con <- TheilSen(Comb_Lakes, pollutant = "DO_Con", 
