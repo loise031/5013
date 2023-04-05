@@ -199,9 +199,9 @@ Sens_Individual_Temp_df <- data.frame(Sens_Individual_Temp$data[[2]])
 ##########################################################################
 
 # Create and Epilimnion value df
-Comb_Lakes_Epi <- subset(Comb_Lakes_Epi, Layer == "Epilimnion")
+Comb_Lakes_Epi <- subset(Comb_Lakes, Layer == "Epilimnion")
 # Create a Hypolimnion value df
-Comb_Lakes_Hypo <- subset(Comb_Lakes_Hypo, Layer == "Hypolimnion")
+Comb_Lakes_Hypo <- subset(Comb_Lakes, Layer == "Hypolimnion")
 
 #DO Concentration Trends Epi
 Sens_Individual_DO_Con_Epi <- TheilSen(Comb_Lakes_Epi, pollutant = "DO_Con", 
