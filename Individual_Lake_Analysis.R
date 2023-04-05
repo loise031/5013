@@ -166,7 +166,7 @@ library(openair)
 #DO Concentration Trends
 Sens_Individual_DO_Con <- TheilSen(Comb_Lakes, pollutant = "DO_Con", 
                               type = "Lagos_Name", deseason = FALSE,
-                              xlab = "year", ylab = "DO Con")
+                              xlab = "year", ylab = "DO Con (whole column)")
 Sens_Individual_DO_Con$data[[2]]
 head(Sens_Individual_DO_Con$data[[1]])
 
@@ -177,7 +177,7 @@ Sens_Individual_DO_Con_df <- data.frame(Sens_Individual_DO_Con$data[[2]])
 #DO Saturation Trends
 Sens_Individual_DO_Sat <- TheilSen(Comb_Lakes, pollutant = "DO_Sat", 
                                    type = "Lagos_Name", deseason = FALSE,
-                                   xlab = "year", ylab = "DO Sat")
+                                   xlab = "year", ylab = "DO Sat (whole column)")
 Sens_Individual_DO_Sat$data[[2]]
 head(Sens_Individual_DO_Sat$data[[1]])
 
@@ -188,7 +188,7 @@ Sens_Individual_DO_Sat_df <- data.frame(Sens_Individual_DO_Sat$data[[2]])
 #Temp Trends
 Sens_Individual_Temp <- TheilSen(Comb_Lakes, pollutant = "Temperature", 
                                    type = "Lagos_Name", deseason = FALSE,
-                                   xlab = "year", ylab = "Temperature")
+                                   xlab = "year", ylab = "Temperature (whole column)")
 Sens_Individual_Temp$data[[2]]
 head(Sens_Individual_Temp$data[[1]])
 
@@ -206,7 +206,7 @@ Comb_Lakes_Hypo <- subset(Comb_Lakes, Layer == "Hypolimnion")
 #DO Concentration Trends Epi
 Sens_Individual_DO_Con_Epi <- TheilSen(Comb_Lakes_Epi, pollutant = "DO_Con", 
                                    type = "Lagos_Name", deseason = FALSE,
-                                   xlab = "year", ylab = "DO Con")
+                                   xlab = "year", ylab = "DO Con Epi")
 Sens_Individual_DO_Con_Epi$data[[2]]
 head(Sens_Individual_DO_Con_Epi$data[[1]])
 
@@ -217,7 +217,7 @@ Sens_Individual_DO_Con_Epi_df <- data.frame(Sens_Individual_DO_Con_Epi$data[[2]]
 #DO Saturation Epi Trends
 Sens_Individual_DO_Sat_Epi <- TheilSen(Comb_Lakes_Epi, pollutant = "DO_Sat", 
                                    type = "Lagos_Name", deseason = FALSE,
-                                   xlab = "year", ylab = "DO Sat")
+                                   xlab = "year", ylab = "DO Sat Epi")
 Sens_Individual_DO_Sat_Epi$data[[2]]
 head(Sens_Individual_DO_Sat_Epi$data[[1]])
 
@@ -228,7 +228,7 @@ Sens_Individual_DO_Sat_Epi_df <- data.frame(Sens_Individual_DO_Sat_Epi$data[[2]]
 #Temp Epi Trends
 Sens_Individual_Temp_Epi <- TheilSen(Comb_Lakes_Epi, pollutant = "Temperature", 
                                  type = "Lagos_Name", deseason = FALSE,
-                                 xlab = "year", ylab = "Temperature")
+                                 xlab = "year", ylab = "Temperature Epi")
 Sens_Individual_Temp_Epi$data[[2]]
 head(Sens_Individual_Temp_Epi$data[[1]])
 
@@ -240,7 +240,7 @@ Sens_Individual_Temp_Epi_df <- data.frame(Sens_Individual_Temp_Epi$data[[2]])
 #DO Concentration Hypo Trends
 Sens_Individual_DO_Con_Hypo <- TheilSen(Comb_Lakes_Hypo, pollutant = "DO_Con", 
                                        type = "Lagos_Name", deseason = FALSE,
-                                       xlab = "year", ylab = "DO Con")
+                                       xlab = "year", ylab = "DO Con Hypo")
 Sens_Individual_DO_Con_Hypo$data[[2]]
 head(Sens_Individual_DO_Con_Hypo$data[[1]])
 
@@ -251,7 +251,7 @@ Sens_Individual_DO_Con_Hypo_df <- data.frame(Sens_Individual_DO_Con_Hypo$data[[2
 #DO Saturation Hypo Trends
 Sens_Individual_DO_Sat_Hypo <- TheilSen(Comb_Lakes_Hypo, pollutant = "DO_Sat", 
                                        type = "Lagos_Name", deseason = FALSE,
-                                       xlab = "year", ylab = "DO Sat")
+                                       xlab = "year", ylab = "DO Sat Hypo")
 Sens_Individual_DO_Sat_Hypo$data[[2]]
 head(Sens_Individual_DO_Sat_Hypo$data[[1]])
 
@@ -262,7 +262,7 @@ Sens_Individual_DO_Sat_Hypo_df <- data.frame(Sens_Individual_DO_Sat_Hypo$data[[2
 #Temp Hypo Trends
 Sens_Individual_Temp_Hypo <- TheilSen(Comb_Lakes_Hypo, pollutant = "Temperature", 
                                      type = "Lagos_Name", deseason = FALSE,
-                                     xlab = "year", ylab = "Temperature")
+                                     xlab = "year", ylab = "Temperature Hypo")
 Sens_Individual_Temp_Hypo$data[[2]]
 head(Sens_Individual_Temp_Hypo$data[[1]])
 
@@ -298,7 +298,7 @@ Individual_Comb_Sens$Analysis <- rep(source_analysis, sapply(df_list, nrow)) #In
 Individual_Comb_Sens <- Individual_Comb_Sens %>%
   select(Analysis, Lagos_Name, p.stars, p, slope,intercept, everything())
 
-sum(Individual_Comb_Sens$p < 0.05) #There are 99 significant trends
+sum(Individual_Comb_Sens$p < 0.05) #There are 115 significant trends
 
 
 
