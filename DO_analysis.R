@@ -335,3 +335,49 @@ Annual_Comb$date <- lubridate::ymd_hms(paste(Annual_Comb$date, "00:00:00"))
    ##and WI epi DO sat on significant decreasing trend
    ##Interesting, because no significant epi DO sat trend in combined tristate dataset - WI and MN cancel out??
    
+#################################
+## PB 4/5 - Adding Sen's Slope separated by layer, but
+## on the Comb_Lakes dataframe, not the Annual_Comb data frame as above in the "Peter
+## code for Sen's Slope" section. Other than the dataframe being analyzed, the code is the same,
+## and all outputs will have "_cl" added to them
+
+   ##temp sens slope for each layer
+   temp_sens_epihypo_cl <- TheilSen(Comb_Lakes, pollutant = "Temperature", type = "Layer", deseason = FALSE, ylab = "Temperature (C)")
+   ##results:
+   view(temp_sens_epihypo_cl)
+   head(temp_sens_epihypo_cl$data[[1]])
+   temp_sens_epihypo_cl$data[[2]]
+   ##epi: slope = 0.03482696, p = 0.003 (**)
+   ##hypo: slope = 0.02519415, p = 0.003 (**)
+   
+   ##do_con sens slope for each layer
+   docon_sens_epihypo_cl <- TheilSen(Comb_Lakes, pollutant = "DO_Con", type = "Layer", deseason = FALSE, ylab = "DO Concentration (mg/L)")
+   ##results:
+   view(docon_sens_epihypo_cl)
+   head(docon_sens_epihypo_cl$data[[1]])
+   docon_sens_epihypo_cl$data[[2]]
+   ##epi: slope = 0.008, p = 0.01 (*)
+   ##hypo: insignificant trend (p = 0.30)
+   
+   ##do_sat sens slope for each layer
+   dosat_sens_epihypo_cl <- TheilSen(Comb_Lakes, pollutant = "DO_Sat", type = "Layer", deseason = FALSE, ylab = "DO % Saturation")
+   ##results:
+   view(dosat_sens_epihypo_cl)
+   head(dosat_sens_epihypo_cl$data[[1]])
+   dosat_sens_epihypo_cl$data[[2]]
+   ##epi: slope = 0.0017, p = 0.00000 (***) 
+   ##hypo: insignificant trend (p = 0.57)
+   
+   ##so, in annual comb, only significant trend was epi temp (+)
+   ##whereas in comb_lakes, significant trends are epi and hypo temp (both +), and epi docon and dosat (+)
+   ##on the plots, it looks like the analysis on the comb_lakes (which is not annually averaged) is still 
+   ##calculating and plotting the annual average for each year and then calculating the slope as the median
+   ##of slopes between all of the points on the plot. Confirm if the function bins by year and then calculates trend. 
+   ##however, I dont think this is taking the annual average of each layer's average in each lake, I think this is 
+   ##just averaging all epi, meta, and hypo observations by year and then calculating trend between years.
+   ##so, I think the annual_comb analysis is what we are interested in, as that takes a dataframe with each lake's average 
+   ##epi and average hypo for each year for each parameter, and then the function is looking for the trend in the 
+   ##annual averages of all lake epi averages for each year and annual averages of all hypo averages for each year
+   
+   
+   
