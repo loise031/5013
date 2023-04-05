@@ -348,7 +348,7 @@ Annual_Comb$date <- lubridate::ymd_hms(paste(Annual_Comb$date, "00:00:00"))
    head(temp_sens_epihypo_cl$data[[1]])
    temp_sens_epihypo_cl$data[[2]]
    ##epi: slope = 0.03482696, p = 0.003 (**)
-   ##hypo: slope = 0.02519415, p = 0.003 (**)
+   ##hypo: insignificant (p = 0.32)
    
    ##do_con sens slope for each layer
    docon_sens_epihypo_cl <- TheilSen(Comb_Lakes, pollutant = "DO_Con", type = "Layer", deseason = FALSE, ylab = "DO Concentration (mg/L)")
@@ -357,7 +357,7 @@ Annual_Comb$date <- lubridate::ymd_hms(paste(Annual_Comb$date, "00:00:00"))
    head(docon_sens_epihypo_cl$data[[1]])
    docon_sens_epihypo_cl$data[[2]]
    ##epi: slope = 0.008, p = 0.01 (*)
-   ##hypo: insignificant trend (p = 0.30)
+   ##hypo: insignificant trend (p = 0.28)
    
    ##do_sat sens slope for each layer
    dosat_sens_epihypo_cl <- TheilSen(Comb_Lakes, pollutant = "DO_Sat", type = "Layer", deseason = FALSE, ylab = "DO % Saturation")
@@ -366,10 +366,10 @@ Annual_Comb$date <- lubridate::ymd_hms(paste(Annual_Comb$date, "00:00:00"))
    head(dosat_sens_epihypo_cl$data[[1]])
    dosat_sens_epihypo_cl$data[[2]]
    ##epi: slope = 0.0017, p = 0.00000 (***) 
-   ##hypo: insignificant trend (p = 0.57)
+   ##hypo: insignificant trend (p = 0.26)
    
    ##so, in annual comb, only significant trend was epi temp (+)
-   ##whereas in comb_lakes, significant trends are epi and hypo temp (both +), and epi docon and dosat (+)
+   ##whereas in comb_lakes, significant trends are temp, dosat, and docon for epilimnion only (all + trends)
    ##on the plots, it looks like the analysis on the comb_lakes (which is not annually averaged) is still 
    ##calculating and plotting the annual average for each year and then calculating the slope as the median
    ##of slopes between all of the points on the plot. Confirm if the function bins by year and then calculates trend. 
@@ -379,5 +379,47 @@ Annual_Comb$date <- lubridate::ymd_hms(paste(Annual_Comb$date, "00:00:00"))
    ##epi and average hypo for each year for each parameter, and then the function is looking for the trend in the 
    ##annual averages of all lake epi averages for each year and annual averages of all hypo averages for each year
    
+   ##NOW SUBSETTING BY STATE AND LAYER (still adding _cl suffix)
+   ##Epi temp
+   temp_sens_epi_state_cl <- TheilSen(Comb_Lakes_Epi, pollutant = "Temperature", type = "State", deseason = FALSE, ylab = "Epi Temp (C)")
+   temp_sens_epi_state_cl$data[[2]]
+   ##MI: No significant trend
+   ##MN: Significant * +0.03/yr
+   ##WI: Significant *** +0.06/yr
+   
+   ##Epi docon
+   docon_sens_epi_state_cl <- TheilSen(Comb_Lakes_Epi, pollutant = "DO_Con", type = "State", deseason = FALSE, ylab = "Epi DO Con (mg/L)")
+   docon_sens_epi_state_cl$data[[2]]
+   ##MI: Significant * -0.02/yr
+   ##MN: Significant ** +0.01/yr
+   ##WI: No significant trend
+   
+   ##Epi dosat
+   dosat_sens_epi_state_cl <- TheilSen(Comb_Lakes_Epi, pollutant = "DO_Sat", type = "State", deseason = FALSE, ylab = "Epi DO % Sat")
+   dosat_sens_epi_state_cl$data[[2]]
+   ##MI: Significant * -0.003/yr
+   ##MN: Significant *** +0.002/yr
+   ##WI: No significant trend
+   
+   ##Hypo temp
+   temp_sens_hypo_state_cl <- TheilSen(Comb_Lakes_Hypo, pollutant = "Temperature", type = "State", deseason = FALSE, ylab = "Hypo Temp (C)")
+   temp_sens_hypo_state_cl$data[[2]]
+   ##MI: No significant trend
+   ##MN: No significant trend
+   ##WI: Significant *** +0.05/yr
+   
+   ##Hypo docon
+   docon_sens_hypo_state_cl <- TheilSen(Comb_Lakes_Hypo, pollutant = "DO_Con", type = "State", deseason = FALSE, ylab = "Hypo DO Con (mg/L)")
+   docon_sens_hypo_state_cl$data[[2]]
+   ##MI: Significant * +0.08/yr
+   ##MN: No significant trend
+   ##WI: Significant *** -0.07/yr
+   
+   ##Hypo dosat
+   dosat_sens_hypo_state_cl <- TheilSen(Comb_Lakes_Hypo, pollutant = "DO_Sat", type = "State", deseason = FALSE, ylab = "Hypo DO % Sat")
+   dosat_sens_hypo_state_cl$data[[2]]
+   ##MI: Significant * +0.01/yr
+   ##MN: No significant trend
+   ##WI: Significant *** -0.01/yr
    
    
