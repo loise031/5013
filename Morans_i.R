@@ -125,6 +125,7 @@
    ## Epilimnion parameters all have moran's i value 0.32-0.66
    ## REVISIT THE BANDWIDTH INPUT SETTING, as we may have reasons to use a number that is not 100.
    ## Suspiciously low # of lake years in the Annual_Comb_Hypo df (104)
-   
+###########################################################################################################################
+###########################################################################################################################
    
    
