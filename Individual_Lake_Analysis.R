@@ -129,6 +129,41 @@ merged_comb_lakes_test$Lagos_Name[merged_comb_lakes_test$MonitoringLocationIdent
 length(unique(merged_comb_lakes_test$Lagos_Name))
 # Now 57 unique names!!!!!
 
+
+merged_comb_lakes_test$Lagos_Name <- ifelse(merged_comb_lakes_test$Lagos_Name == "Unidentified (MN) 18",
+                                            "Carver Lake", merged_comb_lakes_test$Lagos_Name)
+
+merged_comb_lakes_test$Lagos_Name <- ifelse(merged_comb_lakes_test$Lagos_Name == "Unidentified (MN) 27",
+                                            "Tanners Lake", merged_comb_lakes_test$Lagos_Name)
+
+merged_comb_lakes_test$Lagos_Name <- ifelse(merged_comb_lakes_test$Lagos_Name == "Unidentified (MN) 52",
+                                            "Square Lake", merged_comb_lakes_test$Lagos_Name)
+
+merged_comb_lakes_test$Lagos_Name <- ifelse(merged_comb_lakes_test$Lagos_Name == "Unidentified (WI) 4",
+                                            "Lake Monona", merged_comb_lakes_test$Lagos_Name)
+
+merged_comb_lakes_test$Lagos_Name <- ifelse(merged_comb_lakes_test$Lagos_Name == "Unidentified (WI) 5",
+                                            "Lake Mendota", merged_comb_lakes_test$Lagos_Name)
+
+merged_comb_lakes_test$Lagos_Name <- ifelse(merged_comb_lakes_test$Lagos_Name == "Unidentified (WI) 6",
+                                            "Fish Lake 3", merged_comb_lakes_test$Lagos_Name)
+
+merged_comb_lakes_test$Lagos_Name <- ifelse(merged_comb_lakes_test$Lagos_Name == "Unidentified (MN) 47",
+                                            "White Bear Lake", merged_comb_lakes_test$Lagos_Name)
+
+merged_comb_lakes_test$Lagos_Name <- ifelse(merged_comb_lakes_test$Lagos_Name == "Unidentified (WI) 54",
+                                            "Sparking Lake", merged_comb_lakes_test$Lagos_Name)
+
+merged_comb_lakes_test$Lagos_Name <- ifelse(merged_comb_lakes_test$Lagos_Name == "Unidentified (WI) 55",
+                                            "Big Muskellunge Lake", merged_comb_lakes_test$Lagos_Name)
+
+merged_comb_lakes_test$Lagos_Name <- ifelse(merged_comb_lakes_test$Lagos_Name == "Unidentified (WI) 56",
+                                            "Trout Lake", merged_comb_lakes_test$Lagos_Name)
+
+merged_comb_lakes_test$Lagos_Name <- ifelse(merged_comb_lakes_test$Lagos_Name == "Unidentified (WI) 56",
+                                            "Trout Lake", merged_comb_lakes_test$Lagos_Name)
+
+
 #It seems this code works, but not entirely how I intended, the Unidentified numbers are not
 #consecutive, but they are unique to each lake, so it works for our purposes/time. 
 
@@ -138,17 +173,19 @@ length(unique(merged_comb_lakes_test$Lagos_Name))
 
 #Replacing the Comb_Lakes now that I am confident my code worked
 
-Comb_Lakes <- merged_comb_lakes_test
+Comb_Lakes_2 <- merged_comb_lakes_test
+
+#Removing the extra Lagos_Name
 
 #Reordering the Lake Names
-Comb_Lakes <- Comb_Lakes %>%
+Comb_Lakes_2 <- Comb_Lakes_2 %>%
   select(...1, MonitoringLocationIdentifier, State, Lagos_Name, everything())
 
 #Renaming the DO column so it is DO concentration
 
-colnames(Comb_Lakes)[colnames(Comb_Lakes)=="DO"] <- "DO_Con"
-colnames(Comb_Lakes)[colnames(Comb_Lakes)=="DO_saturation"] <- "DO_Sat"
-colnames(Comb_Lakes)[colnames(Comb_Lakes)=="Date"] <- "date"
+colnames(Comb_Lakes_2)[colnames(Comb_Lakes_2)=="DO"] <- "DO_Con"
+colnames(Comb_Lakes_2)[colnames(Comb_Lakes_2)=="DO_saturation"] <- "DO_Sat"
+colnames(Comb_Lakes_2)[colnames(Comb_Lakes_2)=="Date"] <- "date"
 
 
 
@@ -164,7 +201,7 @@ colnames(Comb_Lakes)[colnames(Comb_Lakes)=="Date"] <- "date"
 library(openair)
 
 #DO Concentration Trends
-Sens_Individual_DO_Con <- TheilSen(Comb_Lakes, pollutant = "DO_Con", 
+Sens_Individual_DO_Con <- TheilSen(Comb_Lakes_2, pollutant = "DO_Con", 
                               type = "Lagos_Name", deseason = FALSE,
                               xlab = "year", ylab = "DO Con (whole column)")
 Sens_Individual_DO_Con$data[[2]]
@@ -175,7 +212,7 @@ Sens_Individual_DO_Con_df <- data.frame(Sens_Individual_DO_Con$data[[2]])
 
 
 #DO Saturation Trends
-Sens_Individual_DO_Sat <- TheilSen(Comb_Lakes, pollutant = "DO_Sat", 
+Sens_Individual_DO_Sat <- TheilSen(Comb_Lakes_2, pollutant = "DO_Sat", 
                                    type = "Lagos_Name", deseason = FALSE,
                                    xlab = "year", ylab = "DO Sat (whole column)")
 Sens_Individual_DO_Sat$data[[2]]
@@ -186,7 +223,7 @@ Sens_Individual_DO_Sat_df <- data.frame(Sens_Individual_DO_Sat$data[[2]])
 
 
 #Temp Trends
-Sens_Individual_Temp <- TheilSen(Comb_Lakes, pollutant = "Temperature", 
+Sens_Individual_Temp <- TheilSen(Comb_Lakes_2, pollutant = "Temperature", 
                                    type = "Lagos_Name", deseason = FALSE,
                                    xlab = "year", ylab = "Temperature (whole column)")
 Sens_Individual_Temp$data[[2]]
@@ -199,9 +236,9 @@ Sens_Individual_Temp_df <- data.frame(Sens_Individual_Temp$data[[2]])
 ##########################################################################
 
 # Create and Epilimnion value df
-Comb_Lakes_Epi <- subset(Comb_Lakes, Layer == "Epilimnion")
+Comb_Lakes_Epi <- subset(Comb_Lakes_2, Layer == "Epilimnion")
 # Create a Hypolimnion value df
-Comb_Lakes_Hypo <- subset(Comb_Lakes, Layer == "Hypolimnion")
+Comb_Lakes_Hypo <- subset(Comb_Lakes_2, Layer == "Hypolimnion")
 
 #DO Concentration Trends Epi
 Sens_Individual_DO_Con_Epi <- TheilSen(Comb_Lakes_Epi, pollutant = "DO_Con", 
@@ -300,7 +337,11 @@ Individual_Comb_Sens <- Individual_Comb_Sens %>%
 
 sum(Individual_Comb_Sens$p < 0.05) #There are 115 significant trends
 
+Interim_Data_ID <- Comb_Lakes[, c("MonitoringLocationIdentifier", "State", "Lagos_Name", "Latitude", "Longitude")]
 
+Interim_Data_ID <- distinct(Interim_Data_ID) #remove duplicates
 
+merged_trends_1 <- merge(Individual_Comb_Sens, Interim_Data_ID, by = "Lagos_Name")
 
+Individual_Comb_Sens <- merged_trends_1
 
