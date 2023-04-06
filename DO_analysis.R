@@ -422,4 +422,17 @@ Annual_Comb$date <- lubridate::ymd_hms(paste(Annual_Comb$date, "00:00:00"))
    ##MN: No significant trend
    ##WI: Significant *** -0.01/yr
    
+ ## Adding whole water column temp, docon, and dosat from Comb_Lakes
+   ##temp
+   temp_wholewc_cl <- TheilSen(Comb_Lakes, pollutant = "Temperature", deseason = FALSE, ylab = "Whole WC Temp (C)")
+   temp_wholewc_cl$data[[2]]   
+   
+   ##docon
+   docon_wholewc_cl <- TheilSen(Comb_Lakes, pollutant = "DO_Con", deseason = FALSE, ylab = "Whole WC DO Con (mg/L)")
+   docon_wholewc_cl$data[[2]] 
+   
+   ##dosat
+   dosat_wholewc_cl <- TheilSen(Comb_Lakes, pollutant = "DO_Sat", deseason = FALSE, ylab = "Whole WC DO % Sat")
+   dosat_wholewc_cl$data[[2]] 
+   
    
