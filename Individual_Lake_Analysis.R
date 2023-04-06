@@ -337,7 +337,7 @@ Individual_Comb_Sens <- Individual_Comb_Sens %>%
 
 sum(Individual_Comb_Sens$p < 0.05) #There are 115 significant trends
 
-Interim_Data_ID <- Comb_Lakes[, c("MonitoringLocationIdentifier", "State", "Lagos_Name", "Latitude", "Longitude")]
+Interim_Data_ID <- Comb_Lakes_2[, c("MonitoringLocationIdentifier", "State", "Lagos_Name", "Latitude", "Longitude")]
 
 Interim_Data_ID <- distinct(Interim_Data_ID) #remove duplicates
 
