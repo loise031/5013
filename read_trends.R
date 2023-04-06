@@ -7,6 +7,7 @@ library(tidyverse)
 library(lubridate)        #Allows me to extract a month out of my POSIX value 
 library(openair)
 library(standarize)
+library(trend)
 
 #load files
 setwd("C:/Users/herantal/OneDrive - State of Minnesota - MN365/Documents/Coldwater_MGLP2020/data/limno5013")
@@ -45,3 +46,36 @@ ggplot(jr3, aes(year, peak_tempSC))+
   geom_smooth()+
   theme_classic()+
   labs(y="Scaled peak temp")
+
+#calculate individual lake trend lines
+#create empty dataframe for output form Theil Sen
+SensMod<- data.frame(matrix(0, (5950), 7))###create empty dataframe for g, quartiles
+names(SensMod) <- c("site_id","parameter","z_score","p_value", "L95","U95","Sensslope")
+
+h=1 #this is my counter
+
+for(j in 1:nrow(lakes)){
+  df1<-filter(lakes, ID==h)
+df2<-jr1%>%filter(site_id==df1$`unique(jr3$site_id)`)%>%
+  arrange(year)
+m1<-sens.slope(df2$mean_surf_aug) #select variable in this step
+
+
+SensMod[h,1]<-unique(df2$site_id)
+SensMod[h,2]<-m1$data.name
+SensMod[h,3]<-m1$statistic
+SensMod[h,4]<-m1$p.value
+SensMod[h,5:6]<-m1$conf.int
+SensMod[h,7]<-m1$estimates
+
+h=h+1
+}
+
+SensMod<-SensMod%>%filter(site_id!=0)
+
+#write.csv(SensMod, "peak_temp_allLakes.csv")
+
+ggplot(SensMod, aes(Sensslope))+
+  geom_histogram(fill="lightblue2", color="black")+
+  theme_classic()+
+  geom_vline(xintercept = 0, color="turquoise3", linetype="dashed")
