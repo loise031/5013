@@ -75,7 +75,7 @@ summary(Comb_Lakes_Aug$Temperature) #Confirming
 Comb_Lakes_Aug <- subset(Comb_Lakes_Aug, DO >= 0 & DO <= 20) ##CHANGED 4/1/23, 100% sat at 0.1C is 14.6 so this allows for supersaturation within reasonable limits
 summary(Comb_Lakes_Aug$DO) #Confirming                         ##old data had values <30
 
-#Filtering so that locations are only included if they have a unique value for a minimum of 15 years:
+#Filtering so that locations are only included if they have a unique value for a minimum of 15 years and has 10 years of data:
 #Code is written so the years do not have to be consecutive 
 
 Comb_Lakes_Aug_Counts <- Comb_Lakes_Aug %>%
@@ -86,9 +86,12 @@ Comb_Lakes_Aug_Counts <- Comb_Lakes_Aug %>%
 
 Comb_Lakes_Aug_Counts <- Comb_Lakes_Aug_Counts %>%
   group_by(MonitoringLocationIdentifier) %>%
-  summarize(n_years = sum(n_temps > 0)) %>% #calculates the number of years with at least one temperature measurement for each location
-  filter(n_years >= 15) %>% #Only include locations with >= 15 years
-  select(MonitoringLocationIdentifier) # Resulting df only lists locations that have 15 years of data
+  summarize(n_years = sum(n_temps > 0), 
+            start_year = min(Year), # add start_year column with minimum year
+            end_year = max(Year)) %>% # add end_year column with maximum year
+  filter(n_years >= 10, end_year - start_year + 1 >= 15) %>% # filter for >=10 years of data and >=15 year range
+  select(MonitoringLocationIdentifier)
+
 
 #Only includes lakes with 15 years of data as determined by previous sub setting
 Comb_Lakes_AugY <- subset(Comb_Lakes_Aug,
