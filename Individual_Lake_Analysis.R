@@ -39,29 +39,29 @@ summary(is.na(merged_comb_lakes_test$Lagos_Name))
 #The following code is chatGPT or helped from chatGPT generated code
 ###############################################################################
 # Create a vector to store the unique identifiers for each MonitoringLocationIdentifier
-unique_ids <- unique(merged_comb_lakes_test$MonitoringLocationIdentifier)
-id_map <- setNames(1:length(unique_ids), unique_ids)
+#unique_ids <- unique(merged_comb_lakes_test$MonitoringLocationIdentifier)
+#id_map <- setNames(1:length(unique_ids), unique_ids)
 
 # Define a function to generate the new Lagos_Name values
-gen_new_name <- function(name, id, state) {
-  if (is.na(name)) {
+#gen_new_name <- function(name, id, state) {
+ # if (is.na(name)) {
     # Generate a new name based on the given format
-    unique_id <- id_map[id]
-    new_name <- paste0("Unidentified (", state, ") ", unique_id)
-  } else {
-    new_name <- name
-  }
-  return(new_name)
-}
+ #   unique_id <- id_map[id]
+  #  new_name <- paste0("Unidentified (", state, ") ", unique_id)
+#  } else {
+ #   new_name <- name
+ # }
+#  return(new_name)
+#}
 
 # Apply the gen_new_name function to the Lagos_Name column
-merged_comb_lakes_test$Lagos_Name <- mapply(gen_new_name, 
-                                            merged_comb_lakes_test$Lagos_Name, 
-                                            merged_comb_lakes_test$MonitoringLocationIdentifier, 
-                                            merged_comb_lakes_test$State)
+#merged_comb_lakes_test$Lagos_Name <- mapply(gen_new_name, 
+                                           # merged_comb_lakes_test$Lagos_Name, 
+                                           # merged_comb_lakes_test$MonitoringLocationIdentifier, 
+                                           # merged_comb_lakes_test$State)
 
 # Print the updated data frame
-print(merged_comb_lakes_test)
+#print(merged_comb_lakes_test)
 ###############################################################################
 
 #Any NAs?
@@ -105,10 +105,10 @@ for (id in unique(merged_comb_lakes_test$MonitoringLocationIdentifier[merged_com
 }
 
 length(unique(merged_comb_lakes_test$MonitoringLocationIdentifier))
-#Still 57 Values
+#Still 93 Values
 
 length(unique(merged_comb_lakes_test$Lagos_Name))
-# Now 55 unique Names
+# Now 70 unique Names
 
 #Comparing each unique value for both columns
 unique_pairs <- unique(merged_comb_lakes_test[c("MonitoringLocationIdentifier", "Lagos_Name")])
@@ -127,41 +127,74 @@ merged_comb_lakes_test$Lagos_Name[merged_comb_lakes_test$MonitoringLocationIdent
                                   & merged_comb_lakes_test$Lagos_Name == "Round Lake"] <- "Round Lake 2"
 
 length(unique(merged_comb_lakes_test$Lagos_Name))
-# Now 57 unique names!!!!!
+# Now 72 unique names!
 
 
-merged_comb_lakes_test$Lagos_Name <- ifelse(merged_comb_lakes_test$Lagos_Name == "Unidentified (MN) 18",
+merged_comb_lakes_test$Lagos_Name <- ifelse(merged_comb_lakes_test$MonitoringLocationIdentifier == "MNPCA-82-0166-00-101",
                                             "Carver Lake", merged_comb_lakes_test$Lagos_Name)
 
-merged_comb_lakes_test$Lagos_Name <- ifelse(merged_comb_lakes_test$Lagos_Name == "Unidentified (MN) 27",
+merged_comb_lakes_test$Lagos_Name <- ifelse(merged_comb_lakes_test$MonitoringLocationIdentifier == "MNPCA-82-0115-00-101",
                                             "Tanners Lake", merged_comb_lakes_test$Lagos_Name)
 
-merged_comb_lakes_test$Lagos_Name <- ifelse(merged_comb_lakes_test$Lagos_Name == "Unidentified (MN) 52",
-                                            "Square Lake", merged_comb_lakes_test$Lagos_Name)
-
-merged_comb_lakes_test$Lagos_Name <- ifelse(merged_comb_lakes_test$Lagos_Name == "Unidentified (WI) 4",
+merged_comb_lakes_test$Lagos_Name <- ifelse(merged_comb_lakes_test$MonitoringLocationIdentifier == "WIDNR_WQX-804600",
                                             "Lake Monona", merged_comb_lakes_test$Lagos_Name)
 
-merged_comb_lakes_test$Lagos_Name <- ifelse(merged_comb_lakes_test$Lagos_Name == "Unidentified (WI) 5",
+merged_comb_lakes_test$Lagos_Name <- ifelse(merged_comb_lakes_test$MonitoringLocationIdentifier == "WIDNR_WQX-805400",
                                             "Lake Mendota", merged_comb_lakes_test$Lagos_Name)
 
-merged_comb_lakes_test$Lagos_Name <- ifelse(merged_comb_lakes_test$Lagos_Name == "Unidentified (WI) 6",
+merged_comb_lakes_test$Lagos_Name <- ifelse(merged_comb_lakes_test$MonitoringLocationIdentifier == "WIDNR_WQX-985100",
                                             "Fish Lake 3", merged_comb_lakes_test$Lagos_Name)
 
-merged_comb_lakes_test$Lagos_Name <- ifelse(merged_comb_lakes_test$Lagos_Name == "Unidentified (MN) 47",
+merged_comb_lakes_test$Lagos_Name <- ifelse(merged_comb_lakes_test$MonitoringLocationIdentifier == "MNPCA-82-0167-00-234",
                                             "White Bear Lake", merged_comb_lakes_test$Lagos_Name)
 
-merged_comb_lakes_test$Lagos_Name <- ifelse(merged_comb_lakes_test$Lagos_Name == "Unidentified (WI) 54",
+merged_comb_lakes_test$Lagos_Name <- ifelse(merged_comb_lakes_test$MonitoringLocationIdentifier == "WIDNR_WQX-1881900",
                                             "Sparking Lake", merged_comb_lakes_test$Lagos_Name)
 
-merged_comb_lakes_test$Lagos_Name <- ifelse(merged_comb_lakes_test$Lagos_Name == "Unidentified (WI) 55",
+merged_comb_lakes_test$Lagos_Name <- ifelse(merged_comb_lakes_test$MonitoringLocationIdentifier == "WIDNR_WQX-1835300",
                                             "Big Muskellunge Lake", merged_comb_lakes_test$Lagos_Name)
 
-merged_comb_lakes_test$Lagos_Name <- ifelse(merged_comb_lakes_test$Lagos_Name == "Unidentified (WI) 56",
+merged_comb_lakes_test$Lagos_Name <- ifelse(merged_comb_lakes_test$MonitoringLocationIdentifier == "WIDNR_WQX-2331600",
                                             "Trout Lake", merged_comb_lakes_test$Lagos_Name)
 
-merged_comb_lakes_test$Lagos_Name <- ifelse(merged_comb_lakes_test$Lagos_Name == "Unidentified (WI) 56",
-                                            "Trout Lake", merged_comb_lakes_test$Lagos_Name)
+merged_comb_lakes_test$Lagos_Name <- ifelse(merged_comb_lakes_test$MonitoringLocationIdentifier == "MNPCA-82-0092-00-201",
+                                            "Powers Lake", merged_comb_lakes_test$Lagos_Name)
+
+merged_comb_lakes_test$Lagos_Name <- ifelse(merged_comb_lakes_test$MonitoringLocationIdentifier == "MNPCA-82-0049-00-204",
+                                            "Big Carnelian Lake", merged_comb_lakes_test$Lagos_Name)
+
+merged_comb_lakes_test$Lagos_Name <- ifelse(merged_comb_lakes_test$MonitoringLocationIdentifier == "MNPCA-82-0046-00-203",
+                                            "Square Lake", merged_comb_lakes_test$Lagos_Name)
+
+merged_comb_lakes_test$Lagos_Name <- ifelse(merged_comb_lakes_test$MonitoringLocationIdentifier == "MNPCA-82-0044-00-202",
+                                            "West Boot Lake", merged_comb_lakes_test$Lagos_Name)
+
+merged_comb_lakes_test$Lagos_Name <- ifelse(merged_comb_lakes_test$MonitoringLocationIdentifier == "MNPCA-82-0052-04-203",
+                                            "Big Marine Lake", merged_comb_lakes_test$Lagos_Name)
+
+merged_comb_lakes_test$Lagos_Name <- ifelse(merged_comb_lakes_test$MonitoringLocationIdentifier == "MNPCA-86-0297-00-201",
+                                            "Scott Lake", merged_comb_lakes_test$Lagos_Name)
+
+merged_comb_lakes_test$Lagos_Name <- ifelse(merged_comb_lakes_test$MonitoringLocationIdentifier == "MNPCA-86-0282-00-201",
+                                            "Lake Louisa", merged_comb_lakes_test$Lagos_Name)
+
+merged_comb_lakes_test$Lagos_Name <- ifelse(merged_comb_lakes_test$MonitoringLocationIdentifier == "MNPCA-86-0282-00-201",
+                                            "Lake Louisa", merged_comb_lakes_test$Lagos_Name)
+
+merged_comb_lakes_test$Lagos_Name <- ifelse(merged_comb_lakes_test$MonitoringLocationIdentifier == "MNPCA-82-0021-00-201",
+                                            "Long Lake", merged_comb_lakes_test$Lagos_Name)
+
+
+length(unique(merged_comb_lakes_test$MonitoringLocationIdentifier))
+#Still 93 Values
+
+#Comparing each unique value for both columns
+unique_pairs <- unique(merged_comb_lakes_test[c("Lagos_Name", "MonitoringLocationIdentifier")])
+print(unique_pairs)
+
+
+length(unique(merged_comb_lakes_test$Lagos_Name))
+#Only 86 Values, Some mismatched must have happened, will fix later.
 
 
 #It seems this code works, but not entirely how I intended, the Unidentified numbers are not
