@@ -155,7 +155,7 @@ merged_comb_lakes_test$Lagos_Name <- ifelse(merged_comb_lakes_test$MonitoringLoc
                                             "Big Muskellunge Lake", merged_comb_lakes_test$Lagos_Name)
 
 merged_comb_lakes_test$Lagos_Name <- ifelse(merged_comb_lakes_test$MonitoringLocationIdentifier == "WIDNR_WQX-2331600",
-                                            "Trout Lake", merged_comb_lakes_test$Lagos_Name)
+                                            "Trout Lake 2", merged_comb_lakes_test$Lagos_Name)
 
 merged_comb_lakes_test$Lagos_Name <- ifelse(merged_comb_lakes_test$MonitoringLocationIdentifier == "MNPCA-82-0092-00-201",
                                             "Powers Lake", merged_comb_lakes_test$Lagos_Name)
@@ -184,6 +184,23 @@ merged_comb_lakes_test$Lagos_Name <- ifelse(merged_comb_lakes_test$MonitoringLoc
 merged_comb_lakes_test$Lagos_Name <- ifelse(merged_comb_lakes_test$MonitoringLocationIdentifier == "MNPCA-82-0021-00-201",
                                             "Long Lake", merged_comb_lakes_test$Lagos_Name)
 
+merged_comb_lakes_test$Lagos_Name <- ifelse(merged_comb_lakes_test$MonitoringLocationIdentifier == "WIDNR_WQX-1842400",
+                                            "Crystal Lake 2", merged_comb_lakes_test$Lagos_Name)
+
+merged_comb_lakes_test$Lagos_Name <- ifelse(merged_comb_lakes_test$MonitoringLocationIdentifier == "21MICH-530074",
+                                            "Hamlin Lake; Lost Lake 2", merged_comb_lakes_test$Lagos_Name)
+
+merged_comb_lakes_test$Lagos_Name <- ifelse(merged_comb_lakes_test$MonitoringLocationIdentifier == "21MICH-720028",
+                                            "Higgins Lake 2", merged_comb_lakes_test$Lagos_Name)
+
+merged_comb_lakes_test$Lagos_Name <- ifelse(merged_comb_lakes_test$MonitoringLocationIdentifier == "21MICH-100082",
+                                            "Lake Ann 2", merged_comb_lakes_test$Lagos_Name)
+
+merged_comb_lakes_test$Lagos_Name <- ifelse(merged_comb_lakes_test$MonitoringLocationIdentifier == "MNPCA-03-0383-00-201",
+                                            "Long Lake 2", merged_comb_lakes_test$Lagos_Name)
+
+merged_comb_lakes_test$Lagos_Name <- ifelse(merged_comb_lakes_test$MonitoringLocationIdentifier == "MNPCA-82-0021-00-201",
+                                            "Long Lake 3", merged_comb_lakes_test$Lagos_Name)
 
 length(unique(merged_comb_lakes_test$MonitoringLocationIdentifier))
 #Still 93 Values
@@ -192,9 +209,13 @@ length(unique(merged_comb_lakes_test$MonitoringLocationIdentifier))
 unique_pairs <- unique(merged_comb_lakes_test[c("Lagos_Name", "MonitoringLocationIdentifier")])
 print(unique_pairs)
 
+same_name_result <- merged_comb_lakes_test %>%
+  group_by(Lagos_Name) %>%
+  summarise(n_distinct(MonitoringLocationIdentifier) > 1)
+same_name_result
 
 length(unique(merged_comb_lakes_test$Lagos_Name))
-#Only 86 Values, Some mismatched must have happened, will fix later.
+#93 Values ready for analysis.
 
 
 #It seems this code works, but not entirely how I intended, the Unidentified numbers are not
