@@ -608,5 +608,180 @@ ggplot(subset(Individual_Comb_Sens, Analysis == "DO_Sat_Epi"), aes(slope))+
   geom_vline(xintercept = 0, color="turquoise3", linetype="dashed")
 
 
+#Attempting to recreate figure 1 in Jane et. al from my histograms
 
+#Epi Temp Histogram
+Epi_Hist_Temp <- ggplot(subset(Individual_Comb_Sens, Analysis == "Temp_Epi"), aes(slope))+
+  geom_histogram(fill="lightblue2", color="black")+
+  xlab("Total Temperature Slope") +
+  theme_classic()+
+  geom_vline(xintercept = 0, color="turquoise3", linetype="dashed")
+
+Epi_Density_Temp <- Epi_Hist_Temp + geom_density(alpha = 0.2, fill = "blue",
+histogram = FALSE)
+Epi_Density_Temp
+
+is.na(Individual_Comb_Sens$slope)
+
+#Use the density function to find the maximum of the density function
+Epi_Temp_density_df <- density(na.omit(Individual_Comb_Sens$slope[Individual_Comb_Sens$Analysis == "Temp_Epi"]))
+#Store the max to add a vertical line
+global_max_Epi_Temp <- Epi_Temp_density_df$x[which.max(Epi_Temp_density_df$y)]
+
+Epi_Density_Temp_2 <- ggplot(subset(Individual_Comb_Sens, Analysis == "Temp_Epi"), aes(slope)) +
+  geom_density(color = "black", fill = "coral", alpha = 0.2, histogram = FALSE)+
+  theme_classic()+
+  ylab("Relative Density")+
+  xlab("Temperature Trend (°C decade−1)")+
+  geom_vline(xintercept = 0, color="black", linetype="solid") +
+  geom_vline(xintercept = global_max_Epi_Temp, color="coral", linetype="dashed")
+Epi_Density_Temp_2
+
+#Repeat for Hypo Temp
+#Use the density function to find the maximum of the density function
+Hypo_Temp_density_df <- density(na.omit(Individual_Comb_Sens$slope[Individual_Comb_Sens$Analysis == "Temp_Hypo"]))
+#Store the max to add a vertical line
+global_max_Hypo_Temp <- Hypo_Temp_density_df$x[which.max(Hypo_Temp_density_df$y)]
+
+Epi_Density_Temp_3 <- ggplot(subset(Individual_Comb_Sens, Analysis == "Temp_Hypo"), aes(slope)) +
+  geom_density(color = "black", fill = "cyan3", alpha = 0.2, histogram = FALSE)+
+  theme_classic()+
+  ylab("Relative Density")+
+  xlab("Temperature Trend (°C decade−1)")+
+  geom_vline(xintercept = 0, color="black", linetype="solid") +
+  geom_vline(xintercept = global_max_Hypo_Temp, color="cyan3", linetype="dashed")
+Epi_Density_Temp_3
+
+#Adding the plots together:
+library(gridExtra)
+
+Temp_Density <- ggplot(subset(Individual_Comb_Sens, Analysis == "Temp_Hypo"), aes(slope)) +
+  geom_density(color = "black", fill = "cyan3", alpha = 0.2, histogram = FALSE) +
+  geom_density(data = subset(Individual_Comb_Sens, Analysis == "Temp_Epi"),
+               color = "black", fill = "coral", alpha = 0.2, histogram = FALSE) +
+  theme_classic() +
+  ylab("Relative Density") +
+  xlab("Temperature Trend (°C decade−1)") +
+  geom_vline(xintercept = 0, color = "black", linetype = "solid") +
+  geom_vline(xintercept = global_max_Hypo_Temp, color = "cyan3", linetype = "dashed") +
+  geom_vline(xintercept = global_max_Epi_Temp, color = "coral", linetype = "dashed") +
+  xlim(-0.2, 0.2) +
+  scale_fill_manual(values = c("coral" = "coral", "cyan3" = "cyan3"),
+                    name = "Temperature Layer",
+                    guide = guide_legend(
+                      title = "Temperature Layer",
+                      override.aes = list(alpha = 1)))
+Temp_Density
+
+#Now for DO Concentration
+
+#Use the density function to find the maximum of the density function
+Epi_DO_Con_density_df <- density(na.omit(Individual_Comb_Sens$slope[Individual_Comb_Sens$Analysis == "DO_Con_Epi"]))
+#Store the max to add a vertical line
+global_max_Epi_DO_Con <- Epi_DO_Con_density_df$x[which.max(Epi_DO_Con_density_df$y)]
+
+Epi_Density_DO_Con_2 <- ggplot(subset(Individual_Comb_Sens, Analysis == "DO_Con_Epi"), aes(slope)) +
+  geom_density(color = "black", fill = "coral", alpha = 0.2, histogram = FALSE)+
+  theme_classic()+
+  ylab("Relative Density")+
+  xlab("DO Concentration Trend (mg/l decade−1)")+
+  geom_vline(xintercept = 0, color="black", linetype="solid") +
+  geom_vline(xintercept = global_max_Epi_DO_Con, color="coral", linetype="dashed")
+Epi_Density_DO_Con_2
+
+#Repeat for Hypo Temp
+#Use the density function to find the maximum of the density function
+Hypo_DO_Con_density_df <- density(na.omit(Individual_Comb_Sens$slope[Individual_Comb_Sens$Analysis == "DO_Con_Hypo"]))
+#Store the max to add a vertical line
+global_max_Hypo_DO_Con <- Hypo_DO_Con_density_df$x[which.max(Hypo_DO_Con_density_df$y)]
+
+Epi_Density_DO_Con_3 <- ggplot(subset(Individual_Comb_Sens, Analysis == "DO_Con_Hypo"), aes(slope)) +
+  geom_density(color = "black", fill = "cyan3", alpha = 0.2, histogram = FALSE)+
+  theme_classic()+
+  ylab("Relative Density")+
+  xlab("DO Concentration Trend (mg/l decade−1)")+
+  geom_vline(xintercept = 0, color="black", linetype="solid") +
+  geom_vline(xintercept = global_max_Hypo_DO_Con, color="cyan3", linetype="dashed")
+Epi_Density_DO_Con_3
+
+#Adding the plots together:
+library(gridExtra)
+
+DO_Con_Density <- ggplot(subset(Individual_Comb_Sens, Analysis == "DO_Con_Hypo"), aes(slope)) +
+  geom_density(color = "black", fill = "cyan3", alpha = 0.2, histogram = FALSE) +
+  geom_density(data = subset(Individual_Comb_Sens, Analysis == "DO_Con_Epi"),
+               color = "black", fill = "coral", alpha = 0.2, histogram = FALSE) +
+  theme_classic() +
+  ylab("Relative Density") +
+  xlab("DO Concentration Trend (mg/l decade−1)") +
+  geom_vline(xintercept = 0, color = "black", linetype = "solid") +
+  geom_vline(xintercept = global_max_Hypo_DO_Con, color = "cyan3", linetype = "dashed") +
+  geom_vline(xintercept = global_max_Epi_DO_Con, color = "coral", linetype = "dashed") +
+  xlim(-0.1, 0.1) +
+  scale_fill_manual(values = c("coral" = "coral", "cyan3" = "cyan3"),
+                    name = "Layer",
+                    guide = guide_legend(
+                      title = "Layer",
+                      override.aes = list(alpha = 1)))
+DO_Con_Density
+
+#DO Sat analysis
+
+
+#Use the density function to find the maximum of the density function
+Epi_DO_Sat_density_df <- density(na.omit(Individual_Comb_Sens$slope[Individual_Comb_Sens$Analysis == "DO_Sat_Epi"]))
+#Store the max to add a vertical line
+global_max_Epi_DO_Sat <- Epi_DO_Sat_density_df$x[which.max(Epi_DO_Sat_density_df$y)]
+
+Epi_Density_DO_Sat_2 <- ggplot(subset(Individual_Comb_Sens, Analysis == "DO_Sat_Epi"), aes(slope)) +
+  geom_density(color = "black", fill = "coral", alpha = 0.2, histogram = FALSE)+
+  theme_classic()+
+  ylab("Relative Density")+
+  xlab("DO Saturation Trend (mg/l decade−1)")+
+  geom_vline(xintercept = 0, color="black", linetype="solid") +
+  geom_vline(xintercept = global_max_Epi_DO_Sat, color="coral", linetype="dashed")
+Epi_Density_DO_Sat_2
+
+#Repeat for Hypo Temp
+#Use the density function to find the maximum of the density function
+Hypo_DO_Sat_density_df <- density(na.omit(Individual_Comb_Sens$slope[Individual_Comb_Sens$Analysis == "DO_Sat_Hypo"]))
+#Store the max to add a vertical line
+global_max_Hypo_DO_Sat <- Hypo_DO_Sat_density_df$x[which.max(Hypo_DO_Sat_density_df$y)]
+
+Epi_Density_DO_Sat_3 <- ggplot(subset(Individual_Comb_Sens, Analysis == "DO_Sat_Hypo"), aes(slope)) +
+  geom_density(color = "black", fill = "cyan3", alpha = 0.2, histogram = FALSE)+
+  theme_classic()+
+  ylab("Relative Density")+
+  xlab("DO Saturation Trend (mg/l decade−1)")+
+  geom_vline(xintercept = 0, color="black", linetype="solid") +
+  geom_vline(xintercept = global_max_Hypo_DO_Sat, color="cyan3", linetype="dashed")
+Epi_Density_DO_Sat_3
+
+#Adding the plots together:
+library(gridExtra)
+
+DO_Sat_Density <- ggplot(subset(Individual_Comb_Sens, Analysis == "DO_Sat_Hypo"), aes(slope)) +
+  geom_density(color = "black", fill = "cyan3", alpha = 0.2, histogram = FALSE) +
+  geom_density(data = subset(Individual_Comb_Sens, Analysis == "DO_Sat_Epi"),
+               color = "black", fill = "coral", alpha = 0.2, histogram = FALSE) +
+  theme_classic() +
+  ylab("Relative Density") +
+  xlab("DO Saturation Trend (% decade−1)") +
+  geom_vline(xintercept = 0, color = "black", linetype = "solid") +
+  geom_vline(xintercept = global_max_Hypo_DO_Sat, color = "cyan3", linetype = "dashed") +
+  geom_vline(xintercept = global_max_Epi_DO_Sat, color = "coral", linetype = "dashed") +
+  xlim(-0.02, 0.02) +
+  scale_fill_manual(values = c("coral" = "coral", "cyan3" = "cyan3"),
+                    name = "Layer",
+                    guide = guide_legend(
+                      title = "Layer",
+                      override.aes = list(alpha = 1)))
+DO_Sat_Density
+
+#Combining Plots
+grid.arrange(Temp_Density, DO_Con_Density, DO_Sat_Density, ncol = 3)
+
+Temp_Density
+DO_Con_Density
+DO_Sat_Density
 
