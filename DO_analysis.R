@@ -14,8 +14,8 @@ library(dplyr)
 Daily_avg_comb <- Comb_Lakes %>%
   group_by(MonitoringLocationIdentifier, Latitude, Longitude, ID,
            Year, Layer, State, Max_Depth, top.meta, top.hypo, Elevation_m) %>%
-  summarise(DO_con_mean = mean(DO), Temp_mean = mean(Temperature), 
-            DO_sat_mean = mean(DO_saturation))
+  summarise(DO_con_mean = mean(DO_Con), Temp_mean = mean(Temperature), 
+            DO_sat_mean = mean(DO_Sat))
 
 #Add Layer at the end of the df
 Daily_avg_comb <- Daily_avg_comb %>% select(-Layer, everything()) 

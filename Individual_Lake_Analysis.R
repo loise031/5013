@@ -6,6 +6,12 @@ Comb_Lakes
 
 #Importing the csv needed to add lake names to the Comb_Lakes df
 
+library(tidyverse)
+library(lubridate)        #Allows me to extract a month out of my POSIX value 
+library(openair)
+library(standardize)
+library(trend)
+
 library(readr)
 lake_link_rantala <- read_csv("lake_link_rantala.csv")
 View(lake_link_rantala)
@@ -249,6 +255,13 @@ colnames(Comb_Lakes_2)[colnames(Comb_Lakes_2)=="Date"] <- "date"
 #Comb_Lakes$date <- lubridate::ymd_hms(paste(Comb_Lakes$date, "00:00:00"))
 
 
+#Creating scaled columns for each parameter:
+
+Comb_Lakes_2$Temperature_SC<-scale_by(Temperature ~ Lagos_Name, Comb_Lakes_2)
+Comb_Lakes_2$DO_Con_SC<-scale_by(DO_Con ~ Lagos_Name, Comb_Lakes_2)
+Comb_Lakes_2$DO_Sat_SC<-scale_by(DO_Sat ~ Lagos_Name, Comb_Lakes_2)
+
+
 ###############################################################################
 ###########################-Individual-Trend-Analysis-#########################
 ###############################################################################
@@ -398,4 +411,202 @@ Interim_Data_ID <- distinct(Interim_Data_ID) #remove duplicates
 merged_trends_1 <- merge(Individual_Comb_Sens, Interim_Data_ID, by = "Lagos_Name")
 
 Individual_Comb_Sens <- merged_trends_1
+
+
+# Creating an overall trend plot for whole column temp, DO con, and DO sat
+
+ggplot(Comb_Lakes_2, aes(Year, Temperature)) +
+  geom_point()+
+  geom_smooth()+
+  theme_classic()
+
+ggplot(Comb_Lakes_2, aes(Year, DO_Con)) +
+  geom_point()+
+  geom_smooth()+
+  theme_classic()
+
+ggplot(Comb_Lakes_2, aes(Year, DO_Sat)) +
+  geom_point()+
+  geom_smooth()+
+  theme_classic()
+
+#Whole column scaled trends
+
+
+#plot the scaled data by year
+ggplot(Comb_Lakes_2, aes(Year, Temperature_SC))+
+  geom_point(color="steelblue")+
+  geom_smooth()+
+  theme_classic()+
+  labs(y="Scaled Temperature")
+
+
+ggplot(Comb_Lakes_2, aes(Year, DO_Con_SC))+
+  geom_point(color="steelblue")+
+  geom_smooth()+
+  theme_classic()+
+  labs(y="Scaled DO Concentration")
+
+
+ggplot(Comb_Lakes_2, aes(Year, DO_Sat_SC))+
+  geom_point(color="steelblue")+
+  geom_smooth()+
+  theme_classic()+
+  labs(y="Scaled DO Saturation")
+
+
+#Now creating Sen's Slope Histograms
+
+ggplot(subset(Individual_Comb_Sens, Analysis == "Temp_T"), aes(slope))+
+  geom_histogram(fill="lightblue2", color="black")+
+  xlab("Total Temperature Slope") +
+  theme_classic()+
+  geom_vline(xintercept = 0, color="turquoise3", linetype="dashed")
+
+
+ggplot(subset(Individual_Comb_Sens, Analysis == "DO_Con_T"), aes(slope))+
+  geom_histogram(fill="lightblue2", color="black")+
+  xlab("Total DO Concentration Slope") +
+  theme_classic()+
+  geom_vline(xintercept = 0, color="turquoise3", linetype="dashed")
+
+ggplot(subset(Individual_Comb_Sens, Analysis == "DO_Sat_T"), aes(slope))+
+  geom_histogram(fill="lightblue2", color="black")+
+  xlab("Total DO Saturation Slope") +
+  theme_classic()+
+  geom_vline(xintercept = 0, color="turquoise3", linetype="dashed")
+
+
+
+#Now Epilimnion Figures
+
+ggplot(subset(Comb_Lakes_2, Layer == "Epilimnion"), aes(Year, Temperature)) +
+  geom_point()+
+  geom_smooth()+
+  theme_classic()
+
+ggplot(subset(Comb_Lakes_2, Layer == "Epilimnion"), aes(Year, DO_Con)) +
+  geom_point()+
+  geom_smooth()+
+  theme_classic()
+
+ggplot(subset(Comb_Lakes_2, Layer == "Epilimnion"), aes(Year, DO_Sat)) +
+  geom_point()+
+  geom_smooth()+
+  theme_classic()
+
+
+#Whole column scaled trends
+
+
+#plot the scaled data by year
+ggplot(subset(Comb_Lakes_2, Layer == "Epilimnion"), aes(Year, Temperature_SC))+
+  geom_point(color="steelblue")+
+  geom_smooth()+
+  theme_classic()+
+  labs(y="Scaled Temperature")
+
+
+ggplot(subset(Comb_Lakes_2, Layer == "Epilimnion"), aes(Year, DO_Con_SC))+
+  geom_point(color="steelblue")+
+  geom_smooth()+
+  theme_classic()+
+  labs(y="Scaled DO Concentration")
+
+
+ggplot(subset(Comb_Lakes_2, Layer == "Epilimnion"), aes(Year, DO_Sat_SC))+
+  geom_point(color="steelblue")+
+  geom_smooth()+
+  theme_classic()+
+  labs(y="Scaled DO Saturation")
+
+
+#Now creating Sen's Slope Histograms
+
+ggplot(subset(Individual_Comb_Sens, Analysis == "Temp_Epi"), aes(slope))+
+  geom_histogram(fill="lightblue2", color="black")+
+  xlab("Total Temperature Slope") +
+  theme_classic()+
+  geom_vline(xintercept = 0, color="turquoise3", linetype="dashed")
+
+
+ggplot(subset(Individual_Comb_Sens, Analysis == "DO_Con_Epi"), aes(slope))+
+  geom_histogram(fill="lightblue2", color="black")+
+  xlab("Total DO Concentration Slope") +
+  theme_classic()+
+  geom_vline(xintercept = 0, color="turquoise3", linetype="dashed")
+
+ggplot(subset(Individual_Comb_Sens, Analysis == "DO_Sat_Epi"), aes(slope))+
+  geom_histogram(fill="lightblue2", color="black")+
+  xlab("Total DO Saturation Slope") +
+  theme_classic()+
+  geom_vline(xintercept = 0, color="turquoise3", linetype="dashed")
+
+
+#Now the same for the hypolimnion
+
+ggplot(subset(Comb_Lakes_2, Layer == "Hypolimnion"), aes(Year, Temperature)) +
+  geom_point()+
+  geom_smooth()+
+  theme_classic()
+
+ggplot(subset(Comb_Lakes_2, Layer == "Hypolimnion"), aes(Year, DO_Con)) +
+  geom_point()+
+  geom_smooth()+
+  theme_classic()
+
+ggplot(subset(Comb_Lakes_2, Layer == "Hypolimnion"), aes(Year, DO_Sat)) +
+  geom_point()+
+  geom_smooth()+
+  theme_classic()
+
+
+#Whole column scaled trends
+
+
+#plot the scaled data by year
+ggplot(subset(Comb_Lakes_2, Layer == "Hypolimnion"), aes(Year, Temperature_SC))+
+  geom_point(color="steelblue")+
+  geom_smooth()+
+  theme_classic()+
+  labs(y="Scaled Temperature")
+
+
+ggplot(subset(Comb_Lakes_2, Layer == "Hypolimnion"), aes(Year, DO_Con_SC))+
+  geom_point(color="steelblue")+
+  geom_smooth()+
+  theme_classic()+
+  labs(y="Scaled DO Concentration")
+
+
+ggplot(subset(Comb_Lakes_2, Layer == "Hypolimnion"), aes(Year, DO_Sat_SC))+
+  geom_point(color="steelblue")+
+  geom_smooth()+
+  theme_classic()+
+  labs(y="Scaled DO Saturation")
+
+
+#Now creating Sen's Slope Histograms
+
+ggplot(subset(Individual_Comb_Sens, Analysis == "Temp_Hypo"), aes(slope))+
+  geom_histogram(fill="lightblue2", color="black")+
+  xlab("Total Temperature Slope") +
+  theme_classic()+
+  geom_vline(xintercept = 0, color="turquoise3", linetype="dashed")
+
+
+ggplot(subset(Individual_Comb_Sens, Analysis == "DO_Con_Hypo"), aes(slope))+
+  geom_histogram(fill="lightblue2", color="black")+
+  xlab("Total DO Concentration Slope") +
+  theme_classic()+
+  geom_vline(xintercept = 0, color="turquoise3", linetype="dashed")
+
+ggplot(subset(Individual_Comb_Sens, Analysis == "DO_Sat_Epi"), aes(slope))+
+  geom_histogram(fill="lightblue2", color="black")+
+  xlab("Total DO Saturation Slope") +
+  theme_classic()+
+  geom_vline(xintercept = 0, color="turquoise3", linetype="dashed")
+
+
+
 
