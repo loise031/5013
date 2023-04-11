@@ -342,7 +342,7 @@ Annual_Comb$date <- lubridate::ymd_hms(paste(Annual_Comb$date, "00:00:00"))
 ## and all outputs will have "_cl" added to them
 
    ##temp sens slope for each layer
-   temp_sens_epihypo_cl <- TheilSen(Comb_Lakes, pollutant = "Temperature", type = "Layer", deseason = FALSE, ylab = "Temperature (C)")
+   temp_sens_epihypo_cl <- TheilSen(Comb_Lakes_2, pollutant = "Temperature", type = "Layer", deseason = FALSE, ylab = "Temperature (C)")
    ##results:
    view(temp_sens_epihypo_cl)
    head(temp_sens_epihypo_cl$data[[1]])
@@ -351,7 +351,7 @@ Annual_Comb$date <- lubridate::ymd_hms(paste(Annual_Comb$date, "00:00:00"))
    ##hypo: insignificant (p = 0.32)
    
    ##do_con sens slope for each layer
-   docon_sens_epihypo_cl <- TheilSen(Comb_Lakes, pollutant = "DO_Con", type = "Layer", deseason = FALSE, ylab = "DO Concentration (mg/L)")
+   docon_sens_epihypo_cl <- TheilSen(Comb_Lakes_2, pollutant = "DO_Con", type = "Layer", deseason = FALSE, ylab = "DO Concentration (mg/L)")
    ##results:
    view(docon_sens_epihypo_cl)
    head(docon_sens_epihypo_cl$data[[1]])
@@ -360,7 +360,7 @@ Annual_Comb$date <- lubridate::ymd_hms(paste(Annual_Comb$date, "00:00:00"))
    ##hypo: insignificant trend (p = 0.28)
    
    ##do_sat sens slope for each layer
-   dosat_sens_epihypo_cl <- TheilSen(Comb_Lakes, pollutant = "DO_Sat", type = "Layer", deseason = FALSE, ylab = "DO % Saturation")
+   dosat_sens_epihypo_cl <- TheilSen(Comb_Lakes_2, pollutant = "DO_Sat", type = "Layer", deseason = FALSE, ylab = "DO % Saturation")
    ##results:
    view(dosat_sens_epihypo_cl)
    head(dosat_sens_epihypo_cl$data[[1]])
@@ -424,15 +424,15 @@ Annual_Comb$date <- lubridate::ymd_hms(paste(Annual_Comb$date, "00:00:00"))
    
  ## Adding whole water column temp, docon, and dosat from Comb_Lakes
    ##temp
-   temp_wholewc_cl <- TheilSen(Comb_Lakes, pollutant = "Temperature", deseason = FALSE, ylab = "Whole WC Temp (C)")
+   temp_wholewc_cl <- TheilSen(Comb_Lakes_2, pollutant = "Temperature", deseason = FALSE, ylab = "Whole WC Temp (C)")
    temp_wholewc_cl$data[[2]]   
    
    ##docon
-   docon_wholewc_cl <- TheilSen(Comb_Lakes, pollutant = "DO_Con", deseason = FALSE, ylab = "Whole WC DO Con (mg/L)")
+   docon_wholewc_cl <- TheilSen(Comb_Lakes_2, pollutant = "DO_Con", deseason = FALSE, ylab = "Whole WC DO Con (mg/L)")
    docon_wholewc_cl$data[[2]] 
    
    ##dosat
-   dosat_wholewc_cl <- TheilSen(Comb_Lakes, pollutant = "DO_Sat", deseason = FALSE, ylab = "Whole WC DO % Sat")
+   dosat_wholewc_cl <- TheilSen(Comb_Lakes_2, pollutant = "DO_Sat", deseason = FALSE, ylab = "Whole WC DO % Sat")
    dosat_wholewc_cl$data[[2]] 
    
    
