@@ -224,6 +224,7 @@ length(unique(merged_comb_lakes_test$Lagos_Name))
 #93 Values ready for analysis.
 
 
+
 #It seems this code works, but not entirely how I intended, the Unidentified numbers are not
 #consecutive, but they are unique to each lake, so it works for our purposes/time. 
 
@@ -246,6 +247,82 @@ Comb_Lakes_2 <- Comb_Lakes_2 %>%
 colnames(Comb_Lakes_2)[colnames(Comb_Lakes_2)=="DO"] <- "DO_Con"
 colnames(Comb_Lakes_2)[colnames(Comb_Lakes_2)=="DO_saturation"] <- "DO_Sat"
 colnames(Comb_Lakes_2)[colnames(Comb_Lakes_2)=="Date"] <- "date"
+
+
+#Adding Landuse columns to Comb_Lakes_2
+
+landuse_geo_rantala <- read_csv("landuse_climate_rantala/landuse_geo_rantala.csv")
+
+
+colnames(landuse_geo_rantala)[colnames(landuse_geo_rantala) == "Monitoring"] <- "MonitoringLocationIdentifier"
+
+#Adding a summed Development Column:
+
+landuse_geo_rantala <- landuse_geo_rantala %>%
+  mutate(Total_Dev_Pct = nlcd_devopen21_pct + nlcd_devlow22_pct + nlcd_devmed23_pct
+         + nlcd_devhi24_pct)
+
+length(unique(landuse_geo_rantala$MonitoringLocationIdentifier))
+
+#Now I want to summarize land use data for each site
+# selecting summary columns
+
+landuse_select <- data.frame(landuse_geo_rantala$MonitoringLocationIdentifier, landuse_geo_rantala$Total_Dev_Pct,
+                    landuse_geo_rantala$nlcd_cultcrop82_pct)
+
+colnames(landuse_select)[colnames(landuse_select) == "landuse_geo_rantala.MonitoringLocationIdentifier"] <- "MonitoringLocationIdentifier"
+colnames(landuse_select)[colnames(landuse_select) == "landuse_geo_rantala.Total_Dev_Pct"] <- "Total_Dev_Pct"
+colnames(landuse_select)[colnames(landuse_select) == "landuse_geo_rantala.nlcd_cultcrop82_pct"] <- "Cult_Crop_Pct"
+
+landuse_select <- landuse_select %>%
+  mutate(Ag_Plus_Dev = Total_Dev_Pct + Cult_Crop_Pct)
+
+# Group the data by MonitoringLocationIdentifier and calculate the mean of other columns
+landuse_avg <- landuse_select %>% 
+  group_by(MonitoringLocationIdentifier) %>% 
+  summarize(Total_Dev_Pct = mean(Total_Dev_Pct), 
+            Cult_Crop_Pct = mean(Cult_Crop_Pct), 
+            Ag_Plus_Dev = mean(Ag_Plus_Dev))
+
+#filtering so lake_link_rantala only contains columns in Comb_Lakes_2
+landuse_avg <- landuse_avg[landuse_avg$MonitoringLocationIdentifier %in% Comb_Lakes_2$MonitoringLocationIdentifier, ]
+
+
+
+#Now adding the three land use columns to Comb_Lakes_2 via a lookup table
+
+# create the lookup table with MonitoringLocationIdentifier and land use type columns
+lookup_table_luse <- unique(landuse_avg[, c("MonitoringLocationIdentifier", "Total_Dev_Pct",
+                                            "Cult_Crop_Pct", "Ag_Plus_Dev")])
+
+# create a new column in a different data frame based on the lookup table
+Comb_Lakes_2$Total_Dev_Pct <- lookup_table_luse[match(Comb_Lakes_2$MonitoringLocationIdentifier, 
+                                                           lookup_table_luse$MonitoringLocationIdentifier), 
+                                                     "Total_Dev_Pct"]
+
+# create a new column in a different data frame based on the lookup table
+Comb_Lakes_2$Cult_Crop_Pct <- lookup_table_luse[match(Comb_Lakes_2$MonitoringLocationIdentifier, 
+                                                      lookup_table_luse$MonitoringLocationIdentifier), 
+                                                "Cult_Crop_Pct"]
+
+# create a new column in a different data frame based on the lookup table
+Comb_Lakes_2$Ag_Plus_Dev <- lookup_table_luse[match(Comb_Lakes_2$MonitoringLocationIdentifier, 
+                                                      lookup_table_luse$MonitoringLocationIdentifier), 
+                                                "Ag_Plus_Dev"]
+
+
+Comb_Lakes_2
+
+
+#Now filtering so lake_link_rantala only contains columns in Comb_Lakes_2
+filtered_lake_link_rantala <- lake_link_rantala[lake_link_rantala$MonitoringLocationIdentifier %in% Comb_Lakes_2$MonitoringLocationIdentifier, ]
+
+#Confirming that each has the same number of MLIs
+
+n_distinct(filtered_lake_link_rantala$MonitoringLocationIdentifier)
+#86 unique values
+n_distinct(Comb_Lakes_2$MonitoringLocationIdentifier)
+#93 unique values
 
 
 
@@ -404,13 +481,25 @@ Individual_Comb_Sens <- Individual_Comb_Sens %>%
 
 sum(Individual_Comb_Sens$p < 0.05) #There are 115 significant trends
 
-Interim_Data_ID <- Comb_Lakes_2[, c("MonitoringLocationIdentifier", "State", "Lagos_Name", "Latitude", "Longitude")]
+Interim_Data_ID <- Comb_Lakes_2[, c("MonitoringLocationIdentifier", "State", "Lagos_Name", "ID", 
+                                    "Latitude", "Longitude", "Ag_Plus_Dev", "Cult_Crop_Pct",
+                                    "Total_Dev_Pct")]
 
 Interim_Data_ID <- distinct(Interim_Data_ID) #remove duplicates
 
 merged_trends_1 <- merge(Individual_Comb_Sens, Interim_Data_ID, by = "Lagos_Name")
 
 Individual_Comb_Sens <- merged_trends_1
+
+#Adding a maximum depth column to Individual_Comb_Sens:
+
+# create the lookup table with MonitoringLocationIdentifier and Max_Depth columns
+lookup_table_depth <- unique(Comb_Lakes_2[, c("MonitoringLocationIdentifier", "Max_Depth")])
+
+# create a new column in a different data frame based on the lookup table
+Individual_Comb_Sens$Max_Depth <- lookup_table_depth[match(Individual_Comb_Sens$MonitoringLocationIdentifier, 
+                                                 lookup_table_depth$MonitoringLocationIdentifier), 
+                                           "Max_Depth"]
 
 
 # Creating an overall trend plot for whole column temp, DO con, and DO sat
