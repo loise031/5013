@@ -267,12 +267,9 @@ length(unique(landuse_geo_rantala$MonitoringLocationIdentifier))
 #Now I want to summarize land use data for each site
 # selecting summary columns
 
-landuse_select <- data.frame(landuse_geo_rantala$MonitoringLocationIdentifier, landuse_geo_rantala$Total_Dev_Pct,
-                    landuse_geo_rantala$nlcd_cultcrop82_pct)
+landuse_select <- with(landuse_geo_rantala, data.frame(MonitoringLocationIdentifier, Total_Dev_Pct, nlcd_cultcrop82_pct))
 
-colnames(landuse_select)[colnames(landuse_select) == "landuse_geo_rantala.MonitoringLocationIdentifier"] <- "MonitoringLocationIdentifier"
-colnames(landuse_select)[colnames(landuse_select) == "landuse_geo_rantala.Total_Dev_Pct"] <- "Total_Dev_Pct"
-colnames(landuse_select)[colnames(landuse_select) == "landuse_geo_rantala.nlcd_cultcrop82_pct"] <- "Cult_Crop_Pct"
+colnames(landuse_select)[colnames(landuse_select) == "nlcd_cultcrop82_pct"] <- "Cult_Crop_Pct"
 
 landuse_select <- landuse_select %>%
   mutate(Ag_Plus_Dev = Total_Dev_Pct + Cult_Crop_Pct)
@@ -292,39 +289,18 @@ landuse_avg <- landuse_avg[landuse_avg$MonitoringLocationIdentifier %in% Comb_La
 #Now adding the three land use columns to Comb_Lakes_2 via a lookup table
 
 # create the lookup table with MonitoringLocationIdentifier and land use type columns
-lookup_table_luse <- unique(landuse_avg[, c("MonitoringLocationIdentifier", "Total_Dev_Pct",
-                                            "Cult_Crop_Pct", "Ag_Plus_Dev")])
+#lookup_table_luse <- unique(landuse_avg[, c("MonitoringLocationIdentifier", "Total_Dev_Pct",
+ #                                           "Cult_Crop_Pct", "Ag_Plus_Dev")])
 
-# create a new column in a different data frame based on the lookup table
-Comb_Lakes_2$Total_Dev_Pct <- lookup_table_luse[match(Comb_Lakes_2$MonitoringLocationIdentifier, 
-                                                           lookup_table_luse$MonitoringLocationIdentifier), 
-                                                     "Total_Dev_Pct"]
+# create a new columns from the landuse_avg table into my comb lakes
+Comb_Lakes_2 <- merge(Comb_Lakes_2, landuse_avg[, c("MonitoringLocationIdentifier", "Total_Dev_Pct", 
+                                                    "Cult_Crop_Pct", "Ag_Plus_Dev")], 
+                      by = "MonitoringLocationIdentifier", all.x = TRUE)
 
-# create a new column in a different data frame based on the lookup table
-Comb_Lakes_2$Cult_Crop_Pct <- lookup_table_luse[match(Comb_Lakes_2$MonitoringLocationIdentifier, 
-                                                      lookup_table_luse$MonitoringLocationIdentifier), 
-                                                "Cult_Crop_Pct"]
-
-# create a new column in a different data frame based on the lookup table
-Comb_Lakes_2$Ag_Plus_Dev <- lookup_table_luse[match(Comb_Lakes_2$MonitoringLocationIdentifier, 
-                                                      lookup_table_luse$MonitoringLocationIdentifier), 
-                                                "Ag_Plus_Dev"]
-
-
-Comb_Lakes_2
-
+#Renaming lake_link
 
 #Now filtering so lake_link_rantala only contains columns in Comb_Lakes_2
-filtered_lake_link_rantala <- lake_link_rantala[lake_link_rantala$MonitoringLocationIdentifier %in% Comb_Lakes_2$MonitoringLocationIdentifier, ]
-
-#Confirming that each has the same number of MLIs
-
-n_distinct(filtered_lake_link_rantala$MonitoringLocationIdentifier)
-#86 unique values
-n_distinct(Comb_Lakes_2$MonitoringLocationIdentifier)
-#93 unique values
-
-
+#filtered_lake_link_rantala <- lake_link_rantala[lake_link_rantala$MonitoringLocationIdentifier %in% Comb_Lakes_2$MonitoringLocationIdentifier, ]
 
 #Comb_Lakes$date <- as.Date(Comb_Lakes$date, format = "%d/%m/%Y")
 ##now need to make one more change to the date format for TheilSen to run without errors

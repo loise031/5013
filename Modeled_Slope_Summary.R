@@ -116,3 +116,41 @@ Mod_Sens <- merged_trends_2
 
 #Now I have to edit Mod_Sens to be exactly the same, structurally 
 
+#Adding a MonitoringLocationIdentifier column via a lookup table via nhdid
+
+# create the lookup table with MonitoringLocationIdentifier and Max_Depth columns
+lookup_table_ID <- unique(Comb_Lakes_Link[, c("MonitoringLocationIdentifier", "lake_nhdid")])
+
+# create a new column in a different data frame based on the lookup table
+Mod_Sens$MonitoringLocationIdentifier <- lookup_table_ID[match(Mod_Sens$lake_nhdid, 
+                                                           lookup_table_ID$lake_nhdid), 
+                                                     "MonitoringLocationIdentifier"]
+
+#Renaming columns for merging
+colnames(Mod_Sens)[colnames(Mod_Sens) == "centroid_lat"] <- "Latitude"
+
+colnames(Mod_Sens)[colnames(Mod_Sens) == "centroid_lon"] <- "Longitude"
+
+colnames(Mod_Sens)[colnames(Mod_Sens) == "state"] <- "State"
+
+# add a new column indicating the origin of each row
+Individual_Comb_Sens$Origin <- "Measured"
+Mod_Sens$Origin <- "Modeled"
+
+Master_Slopes <- bind_rows(Individual_Comb_Sens, Mod_Sens)
+
+#Reordering the column names
+Master_Slopes <- Master_Slopes %>%
+  select(MonitoringLocationIdentifier, everything())
+
+#This is an almost completed data set to model.
+
+
+
+
+
+
+
+
+
+
