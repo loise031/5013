@@ -438,7 +438,9 @@ df_list <- list(Sens_Individual_DO_Con_df, Sens_Individual_DO_Sat_df,
                 Sens_Individual_Temp_Hypo_df) # List of data frames
 
 for (i in 1:length(df_list)) {
-  df_list[[i]] <- df_list[[i]][seq(1, nrow(df_list[[i]]), by=2),] # Remove even rows
+  df_list[[i]] <- df_list[[i]]%>%filter(a!="NaN")
+  #line below unintentionally removes some of the DO data, as the epi do dataframes flip to having NaN in odd rows around line 105
+  #df_list[[i]] <- df_list[[i]][seq(1, nrow(df_list[[i]]), by=2),] # Remove even rows
   rownames(df_list[[i]]) <- 1:nrow(df_list[[i]]) # Renumber rows
 }
 
