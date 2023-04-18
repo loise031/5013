@@ -459,7 +459,7 @@ Individual_Comb_Sens <- Individual_Comb_Sens %>%
 
 sum(Individual_Comb_Sens$p < 0.05) #There are 115 significant trends
 
-Interim_Data_ID <- Comb_Lakes_2[, c("MonitoringLocationIdentifier", "State", "Lagos_Name", 
+Interim_Data_ID <- Comb_Lakes_2[, c("MonitoringLocationIdentifier", "State", "Lagos_Name",
                                     "Latitude", "Longitude", "Ag_Plus_Dev", "Cult_Crop_Pct",
                                     "Total_Dev_Pct")]
 
@@ -567,21 +567,21 @@ ggplot(subset(Comb_Lakes_2, Layer == "Epilimnion"), aes(Year, DO_Sat)) +
 
 
 #plot the scaled data by year
-ggplot(subset(Comb_Lakes_2, Layer == "Epilimnion"), aes(Year, Temperature_SC))+
+Epi_Temp_Scaled <- ggplot(subset(Comb_Lakes_2, Layer == "Epilimnion"), aes(Year, Temperature_SC))+
   geom_point(color="steelblue")+
   geom_smooth()+
   theme_classic()+
   labs(y="Scaled Temperature")
 
 
-ggplot(subset(Comb_Lakes_2, Layer == "Epilimnion"), aes(Year, DO_Con_SC))+
+Epi_DO_Con_Scaled <- ggplot(subset(Comb_Lakes_2, Layer == "Epilimnion"), aes(Year, DO_Con_SC))+
   geom_point(color="steelblue")+
   geom_smooth()+
   theme_classic()+
   labs(y="Scaled DO Concentration")
 
 
-ggplot(subset(Comb_Lakes_2, Layer == "Epilimnion"), aes(Year, DO_Sat_SC))+
+Epi_DO_Sat_Scaled <- ggplot(subset(Comb_Lakes_2, Layer == "Epilimnion"), aes(Year, DO_Sat_SC))+
   geom_point(color="steelblue")+
   geom_smooth()+
   theme_classic()+
@@ -590,20 +590,19 @@ ggplot(subset(Comb_Lakes_2, Layer == "Epilimnion"), aes(Year, DO_Sat_SC))+
 
 #Now creating Sen's Slope Histograms
 
-ggplot(subset(Individual_Comb_Sens, Analysis == "Temp_Epi"), aes(slope))+
-  geom_histogram(fill="lightblue2", color="black")+
-  xlab("Total Temperature Slope") +
-  theme_classic()+
-  geom_vline(xintercept = 0, color="turquoise3", linetype="dashed")
-
-
-ggplot(subset(Individual_Comb_Sens, Analysis == "DO_Con_Epi"), aes(slope))+
+Epi_Temp_Hist <- ggplot(subset(Individual_Comb_Sens, Analysis == "Temp_Epi"), aes(slope))+
   geom_histogram(fill="lightblue2", color="black")+
   xlab("Total DO Concentration Slope") +
   theme_classic()+
   geom_vline(xintercept = 0, color="turquoise3", linetype="dashed")
 
-ggplot(subset(Individual_Comb_Sens, Analysis == "DO_Sat_Epi"), aes(slope))+
+Epi_DO_Con_Hist <- ggplot(subset(Individual_Comb_Sens, Analysis == "DO_Con_Epi"), aes(slope))+
+  geom_histogram(fill="lightblue2", color="black")+
+  xlab("Total DO Concentration Slope") +
+  theme_classic()+
+  geom_vline(xintercept = 0, color="turquoise3", linetype="dashed")
+
+Epi_DO_Sat_Hist <- ggplot(subset(Individual_Comb_Sens, Analysis == "DO_Sat_Epi"), aes(slope))+
   geom_histogram(fill="lightblue2", color="black")+
   xlab("Total DO Saturation Slope") +
   theme_classic()+
@@ -632,21 +631,21 @@ ggplot(subset(Comb_Lakes_2, Layer == "Hypolimnion"), aes(Year, DO_Sat)) +
 
 
 #plot the scaled data by year
-ggplot(subset(Comb_Lakes_2, Layer == "Hypolimnion"), aes(Year, Temperature_SC))+
+Hypo_Temp_Scaled <- ggplot(subset(Comb_Lakes_2, Layer == "Hypolimnion"), aes(Year, Temperature_SC))+
   geom_point(color="steelblue")+
   geom_smooth()+
   theme_classic()+
   labs(y="Scaled Temperature")
 
 
-ggplot(subset(Comb_Lakes_2, Layer == "Hypolimnion"), aes(Year, DO_Con_SC))+
+Hypo_DO_Con_Scaled <- ggplot(subset(Comb_Lakes_2, Layer == "Hypolimnion"), aes(Year, DO_Con_SC))+
   geom_point(color="steelblue")+
   geom_smooth()+
   theme_classic()+
   labs(y="Scaled DO Concentration")
 
 
-ggplot(subset(Comb_Lakes_2, Layer == "Hypolimnion"), aes(Year, DO_Sat_SC))+
+Hypo_DO_Sat_Scaled <-ggplot(subset(Comb_Lakes_2, Layer == "Hypolimnion"), aes(Year, DO_Sat_SC))+
   geom_point(color="steelblue")+
   geom_smooth()+
   theme_classic()+
@@ -655,20 +654,20 @@ ggplot(subset(Comb_Lakes_2, Layer == "Hypolimnion"), aes(Year, DO_Sat_SC))+
 
 #Now creating Sen's Slope Histograms
 
-ggplot(subset(Individual_Comb_Sens, Analysis == "Temp_Hypo"), aes(slope))+
+Hypo_Temp_Hist <- ggplot(subset(Individual_Comb_Sens, Analysis == "Temp_Hypo"), aes(slope))+
   geom_histogram(fill="lightblue2", color="black")+
   xlab("Total Temperature Slope") +
   theme_classic()+
   geom_vline(xintercept = 0, color="turquoise3", linetype="dashed")
 
 
-ggplot(subset(Individual_Comb_Sens, Analysis == "DO_Con_Hypo"), aes(slope))+
+Hypo_DO_Con_Hist <- ggplot(subset(Individual_Comb_Sens, Analysis == "DO_Con_Hypo"), aes(slope))+
   geom_histogram(fill="lightblue2", color="black")+
   xlab("Total DO Concentration Slope") +
   theme_classic()+
   geom_vline(xintercept = 0, color="turquoise3", linetype="dashed")
 
-ggplot(subset(Individual_Comb_Sens, Analysis == "DO_Sat_Epi"), aes(slope))+
+Hypo_DO_Sat_Hist <- ggplot(subset(Individual_Comb_Sens, Analysis == "DO_Sat_Epi"), aes(slope))+
   geom_histogram(fill="lightblue2", color="black")+
   xlab("Total DO Saturation Slope") +
   theme_classic()+
@@ -694,8 +693,9 @@ is.na(Individual_Comb_Sens$slope)
 Epi_Temp_density_df <- density(na.omit(Individual_Comb_Sens$slope[Individual_Comb_Sens$Analysis == "Temp_Epi"]))
 #Store the max to add a vertical line
 global_max_Epi_Temp <- Epi_Temp_density_df$x[which.max(Epi_Temp_density_df$y)]
+global_max_Epi_Temp_10 <- global_max_Epi_Temp*10
 
-Epi_Density_Temp_2 <- ggplot(subset(Individual_Comb_Sens, Analysis == "Temp_Epi"), aes(slope)) +
+Epi_Density_Temp_2 <- ggplot(subset(Individual_Comb_Sens, Analysis == "Temp_Epi"), aes(slope*10)) +
   geom_density(color = "black", fill = "coral", alpha = 0.2, histogram = FALSE)+
   theme_classic()+
   ylab("Relative Density")+
@@ -709,8 +709,9 @@ Epi_Density_Temp_2
 Hypo_Temp_density_df <- density(na.omit(Individual_Comb_Sens$slope[Individual_Comb_Sens$Analysis == "Temp_Hypo"]))
 #Store the max to add a vertical line
 global_max_Hypo_Temp <- Hypo_Temp_density_df$x[which.max(Hypo_Temp_density_df$y)]
+global_max_Hypo_Temp_10 <- global_max_Hypo_Temp*10
 
-Epi_Density_Temp_3 <- ggplot(subset(Individual_Comb_Sens, Analysis == "Temp_Hypo"), aes(slope)) +
+Epi_Density_Temp_3 <- ggplot(subset(Individual_Comb_Sens, Analysis == "Temp_Hypo"), aes(slope*10)) +
   geom_density(color = "black", fill = "cyan3", alpha = 0.2, histogram = FALSE)+
   theme_classic()+
   ylab("Relative Density")+
@@ -722,7 +723,7 @@ Epi_Density_Temp_3
 #Adding the plots together:
 library(gridExtra)
 
-Temp_Density <- ggplot(subset(Individual_Comb_Sens, Analysis == "Temp_Hypo"), aes(slope)) +
+Temp_Density <- ggplot(subset(Individual_Comb_Sens, Analysis == "Temp_Hypo"), aes(slope*10)) +
   geom_density(color = "black", fill = "cyan3", alpha = 0.2, histogram = FALSE) +
   geom_density(data = subset(Individual_Comb_Sens, Analysis == "Temp_Epi"),
                color = "black", fill = "coral", alpha = 0.2, histogram = FALSE) +
@@ -730,9 +731,9 @@ Temp_Density <- ggplot(subset(Individual_Comb_Sens, Analysis == "Temp_Hypo"), ae
   ylab("Relative Density") +
   xlab("Temperature Trend (°C decade−1)") +
   geom_vline(xintercept = 0, color = "black", linetype = "solid") +
-  geom_vline(xintercept = global_max_Hypo_Temp, color = "cyan3", linetype = "dashed") +
-  geom_vline(xintercept = global_max_Epi_Temp, color = "coral", linetype = "dashed") +
-  xlim(-0.2, 0.2) +
+  geom_vline(xintercept = global_max_Hypo_Temp_10, color = "cyan3", linetype = "dashed") +
+  geom_vline(xintercept = global_max_Epi_Temp_10, color = "coral", linetype = "dashed") +
+  xlim(-2, 2) +
   scale_fill_manual(values = c("coral" = "coral", "cyan3" = "cyan3"),
                     name = "Temperature Layer",
                     guide = guide_legend(
@@ -746,6 +747,7 @@ Temp_Density
 Epi_DO_Con_density_df <- density(na.omit(Individual_Comb_Sens$slope[Individual_Comb_Sens$Analysis == "DO_Con_Epi"]))
 #Store the max to add a vertical line
 global_max_Epi_DO_Con <- Epi_DO_Con_density_df$x[which.max(Epi_DO_Con_density_df$y)]
+global_max_Epi_DO_Con_10 <- global_max_Epi_DO_Con*10
 
 Epi_Density_DO_Con_2 <- ggplot(subset(Individual_Comb_Sens, Analysis == "DO_Con_Epi"), aes(slope)) +
   geom_density(color = "black", fill = "coral", alpha = 0.2, histogram = FALSE)+
@@ -761,6 +763,7 @@ Epi_Density_DO_Con_2
 Hypo_DO_Con_density_df <- density(na.omit(Individual_Comb_Sens$slope[Individual_Comb_Sens$Analysis == "DO_Con_Hypo"]))
 #Store the max to add a vertical line
 global_max_Hypo_DO_Con <- Hypo_DO_Con_density_df$x[which.max(Hypo_DO_Con_density_df$y)]
+global_max_Hypo_DO_Con_10 <- global_max_Hypo_DO_Con*10
 
 Epi_Density_DO_Con_3 <- ggplot(subset(Individual_Comb_Sens, Analysis == "DO_Con_Hypo"), aes(slope)) +
   geom_density(color = "black", fill = "cyan3", alpha = 0.2, histogram = FALSE)+
@@ -782,8 +785,8 @@ DO_Con_Density <- ggplot(subset(Individual_Comb_Sens, Analysis == "DO_Con_Hypo")
   ylab("Relative Density") +
   xlab("DO Concentration Trend (mg/l decade−1)") +
   geom_vline(xintercept = 0, color = "black", linetype = "solid") +
-  geom_vline(xintercept = global_max_Hypo_DO_Con, color = "cyan3", linetype = "dashed") +
-  geom_vline(xintercept = global_max_Epi_DO_Con, color = "coral", linetype = "dashed") +
+  geom_vline(xintercept = global_max_Hypo_DO_Con_10, color = "cyan3", linetype = "dashed") +
+  geom_vline(xintercept = global_max_Epi_DO_Con_10, color = "coral", linetype = "dashed") +
   xlim(-0.1, 0.1) +
   scale_fill_manual(values = c("coral" = "coral", "cyan3" = "cyan3"),
                     name = "Layer",
@@ -799,6 +802,7 @@ DO_Con_Density
 Epi_DO_Sat_density_df <- density(na.omit(Individual_Comb_Sens$slope[Individual_Comb_Sens$Analysis == "DO_Sat_Epi"]))
 #Store the max to add a vertical line
 global_max_Epi_DO_Sat <- Epi_DO_Sat_density_df$x[which.max(Epi_DO_Sat_density_df$y)]
+global_max_Epi_DO_Sat_10 <- global_max_Epi_DO_Sat*10
 
 Epi_Density_DO_Sat_2 <- ggplot(subset(Individual_Comb_Sens, Analysis == "DO_Sat_Epi"), aes(slope)) +
   geom_density(color = "black", fill = "coral", alpha = 0.2, histogram = FALSE)+
@@ -814,6 +818,7 @@ Epi_Density_DO_Sat_2
 Hypo_DO_Sat_density_df <- density(na.omit(Individual_Comb_Sens$slope[Individual_Comb_Sens$Analysis == "DO_Sat_Hypo"]))
 #Store the max to add a vertical line
 global_max_Hypo_DO_Sat <- Hypo_DO_Sat_density_df$x[which.max(Hypo_DO_Sat_density_df$y)]
+global_max_Hypo_DO_Sat_10 <- global_max_Hypo_DO_Sat*10
 
 Epi_Density_DO_Sat_3 <- ggplot(subset(Individual_Comb_Sens, Analysis == "DO_Sat_Hypo"), aes(slope)) +
   geom_density(color = "black", fill = "cyan3", alpha = 0.2, histogram = FALSE)+
@@ -852,3 +857,13 @@ Temp_Density
 DO_Con_Density
 DO_Sat_Density
 
+#Making Temp Plots
+grid.arrange(Epi_Temp_Scaled, Epi_Temp_Hist, Hypo_Temp_Scaled, Hypo_Temp_Hist, ncol = 2)
+
+grid.arrange(Epi_DO_Con_Scaled, Epi_DO_Con_Hist, Hypo_DO_Con_Scaled, Hypo_DO_Con_Hist, ncol = 2)
+
+grid.arrange(Epi_DO_Sat_Scaled, Epi_DO_Sat_Hist, Hypo_DO_Sat_Scaled, Hypo_DO_Sat_Hist, ncol = 2)
+
+
+
+table(Individual_Comb_Sens$Analysis)
