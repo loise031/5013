@@ -145,12 +145,17 @@ Master_Slopes <- Master_Slopes %>%
 
 #This is an almost completed data set to model.
 
+write.csv(Master_Slopes, file = "Master_Slopes.csv", row.names = TRUE)
 
 
+Master_Slopes %>%
+  filter(Origin == "Measured") %>%
+  summarize(n_distinct(MonitoringLocationIdentifier))
 
+#93 Measured Lakes
 
+Master_Slopes %>%
+  filter(Origin == "Modeled") %>%
+  summarize(n_distinct(MonitoringLocationIdentifier))
 
-
-
-
-
+#77 Modeled Lakes
