@@ -2,7 +2,7 @@
 # Comb_Lakes_Script -> Individual_Lake_Analysis, and the Merging_Pre_Regression, all .R files
 
 
-
+library(tidyverse)
 #Now I want to run Sen's slope on all relevant parameters and integrate it with Individual_Comb_Sens
 
 
@@ -56,7 +56,7 @@ Sens_Mod_Strat_Dur_df <- data.frame(Sens_Mod_Strat_Dur$data[[2]])
 
 
 #Schmidt Stability Daily Annual Sum Trends
-Sens_Mod_Strat_Schmidt <- TheilSen(Filtered_Read_Link, pollutant = "stratification_duration", 
+Sens_Mod_Strat_Schmidt <- TheilSen(Filtered_Read_Link, pollutant = "schmidt_daily_annual_sum", 
                                type = "lake_name", deseason = FALSE,
                                xlab = "year", ylab = "Modeled Schmidt Stability Daily Annual Sum")
 Sens_Mod_Strat_Schmidt$data[[2]]
