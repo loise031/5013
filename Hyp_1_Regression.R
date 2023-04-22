@@ -292,3 +292,138 @@ summary(mod5)
 
 #Max depth does appear to be a significant predictor.
 
+################################################################################
+################################################################################
+################################################################################
+################################################################################
+#Epi Temp ~ Ag 
+
+par(mfrow = c(1,1))
+scatter.smooth((Temp_Epi), Cult_Crop, span = 2/3) #Not a strong correlation
+
+#I am not convinced this is monotonic
+
+mod6 <- lm((Temp_Epi) ~ Cult_Crop)
+par(mfrow = c(2,2))
+plot(mod6)
+
+#Square root transformation looks acceptable for equal variance, normality, and no outliers
+
+summary(mod6)
+#
+#Call:
+ # lm(formula = (Temp_Epi) ~ Cult_Crop)
+
+#Residuals:
+#  Min        1Q    Median        3Q       Max 
+#-0.119826 -0.026817  0.004907  0.022432  0.166280 
+
+#Coefficients:
+ # Estimate Std. Error t value Pr(>|t|)   
+#(Intercept)  0.0130604  0.0059240   2.205  0.03054 * 
+ # Cult_Crop   -0.0015009  0.0004712  -3.185  0.00211 **
+  #---
+  #Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+#Residual standard error: 0.04163 on 75 degrees of freedom
+#Multiple R-squared:  0.1192,	Adjusted R-squared:  0.1074 
+#F-statistic: 10.15 on 1 and 75 DF,  p-value: 0.002108
+
+#Significant 
+
+################################################################################
+################################################################################
+################################################################################
+################################################################################
+#Epi Temp ~ Ag + Depth_Max 
+
+pairs(~ Max_Depth + Cult_Crop)
+
+
+panel.cor <- function(x, y, digits=2, cex.cor) {
+  usr <- par("usr"); on.exit(par(usr))
+  par(usr = c(0, 1, 0, 1))
+  r <- abs(cor(x, y, method = "spearman"))
+  txt <- format(c(r, 0.123456789), digits=digits)[1]
+  test <- cor.test(x, y)
+  p_value_text <- paste0("p=", format(test$p.value, digits=digits))
+  text(0.5, 0.5, paste("r=", txt, p_value_text))
+}
+
+pairs(~ Temp_Epi + Max_Depth + Cult_Crop,
+      lower.panel = panel.smooth, upper.panel = panel.cor) 
+
+
+vif(lm(Temp_Epi ~ Cult_Crop + Max_Depth))
+
+#Cult_Crop + Max_Depth: VIF values look good
+#1.006055  1.006055 
+
+
+
+mod7 <- lm(Temp_Epi ~ Cult_Crop + Max_Depth)
+avPlots(mod7)
+
+#Both variables appear to be linear while keeping the other variable constant
+
+par(mfrow = c(2, 2))
+plot(mod7)
+
+#Assumptions seeme acceptable for equal variance, normality, and outliers
+
+summary(mod7)
+#Call:
+ # lm(formula = Temp_Epi ~ Cult_Crop + Max_Depth)
+
+#Residuals:
+ # Min        1Q    Median        3Q       Max 
+#-0.105612 -0.024231  0.005061  0.023023  0.158360 
+
+#Coefficients:
+ # Estimate Std. Error t value Pr(>|t|)   
+#(Intercept) -0.0128551  0.0127604  -1.007  0.31702   
+#Cult_Crop   -0.0014196  0.0004600  -3.086  0.00285 **
+ # Max_Depth    0.0016625  0.0007303   2.277  0.02571 * 
+  #---
+  #Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+#Residual standard error: 0.04052 on 74 degrees of freedom
+#Multiple R-squared:  0.1768,	Adjusted R-squared:  0.1546 
+#F-statistic: 7.947 on 2 and 74 DF,  p-value: 0.0007475
+
+#Both are still significant!
+
+################################################################################
+################################################################################
+################################################################################
+################################################################################
+#Epi Temp ~ Modeled Aire Temp
+
+par(mfrow = c(1,1))
+scatter.smooth((Temp_Epi), Mod_Temp, span = 2/3) #Not a strong correlation
+
+
+mod8 <- lm(Temp_Epi ~ Mod_Temp)
+par(mfrow = c(2,2))
+plot(mod8)
+
+# All assumptions appear to be met
+
+summary(mod8)
+
+#
+#Call:
+ # lm(formula = Temp_Epi ~ Mod_Temp)
+
+#Residuals:
+ # Min        1Q    Median        3Q       Max 
+#-0.105388 -0.022183  0.003031  0.027452  0.169138 
+
+#Coefficients:
+ # Estimate Std. Error t value Pr(>|t|)
+#(Intercept) -0.01575    0.01181  -1.334    0.186
+#Mod_Temp     0.90513    0.55347   1.635    0.106
+
+#Residual standard error: 0.04359 on 75 degrees of freedom
+#Multiple R-squared:  0.03443,	Adjusted R-squared:  0.02156 
+#F-statistic: 2.674 on 1 and 75 DF,  p-value: 0.1062
