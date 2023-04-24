@@ -38,6 +38,7 @@ Ag_Plus_Dev <- Combined_Slopes$Ag_Plus_Dev[Combined_Slopes$Analysis == "Temp_Epi
 Cult_Crop <- Combined_Slopes$Cult_Crop_Pct[Combined_Slopes$Analysis == "Temp_Epi"]
 Total_Dev <- Combined_Slopes$Total_Dev_Pct[Combined_Slopes$Analysis == "Temp_Epi"]
 Max_Depth <- Combined_Slopes$Max_Depth[Combined_Slopes$Analysis == "Temp_Epi"]
+Lat <- Combined_Slopes$Latitude[Combined_Slopes$Analysis == "Temp_Epi"]
 pairs(~ Mod_Temp + Mod_Strat_Dur)
 
 
@@ -397,7 +398,7 @@ summary(mod7)
 ################################################################################
 ################################################################################
 ################################################################################
-#Epi Temp ~ Modeled Aire Temp
+#Epi Temp ~ Modeled Air Temp
 
 par(mfrow = c(1,1))
 scatter.smooth((Temp_Epi), Mod_Temp, span = 2/3) #Not a strong correlation
@@ -427,3 +428,23 @@ summary(mod8)
 #Residual standard error: 0.04359 on 75 degrees of freedom
 #Multiple R-squared:  0.03443,	Adjusted R-squared:  0.02156 
 #F-statistic: 2.674 on 1 and 75 DF,  p-value: 0.1062
+
+
+################################################################################
+################################################################################
+################################################################################
+################################################################################
+#Epi Temp ~ Latitude
+
+par(mfrow = c(1,1))
+scatter.smooth((Temp_Epi), (Lat), span = 2/3) #Not a strong correlation
+
+#I am not convinced this is monotonic
+
+mod9 <- lm((Temp_Epi) ~ (Lat))
+par(mfrow = c(2,2))
+plot(mod9)
+
+#Square root transformation looks acceptable for equal variance, normality, and no outliers
+
+summary(mod9)
