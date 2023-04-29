@@ -308,6 +308,13 @@ Comb_Lakes_2 <- merge(Comb_Lakes_2, landuse_avg[, c("MonitoringLocationIdentifie
 #Comb_Lakes$date <- lubridate::ymd_hms(paste(Comb_Lakes$date, "00:00:00"))
 
 
+###############################################################################
+#Trying to merge air temperature with the observed Comb Lakes 2
+
+climate_norm_lake_geo_rantala <- read_csv("landuse_climate_rantala/climate_norm_lake_geo_rantala.csv")
+
+
+
 #Creating scaled columns for each parameter:
 
 Comb_Lakes_2$Temperature_SC<-scale_by(Temperature ~ Lagos_Name, Comb_Lakes_2)
@@ -867,3 +874,88 @@ grid.arrange(Epi_DO_Sat_Scaled, Epi_DO_Sat_Hist, Hypo_DO_Sat_Scaled, Hypo_DO_Sat
 
 
 table(Individual_Comb_Sens$Analysis)
+
+
+#Now creating similar plots with all of the Read data
+
+Tot_Mean_Bot_Trends <- read_csv("mean_aug_bot_trends.csv")
+Tot_Mean_Surf_Trends <- read_csv("mean_aug_surf_trends.csv")
+
+colnames(Tot_Mean_Surf_Trends)[colnames(Tot_Mean_Surf_Trends) == "Sensslope"] <- "slope"
+colnames(Tot_Mean_Bot_Trends)[colnames(Tot_Mean_Bot_Trends) == "Sensslope"] <- "slope"
+
+
+
+#Do I integrate with the observed dataset?
+
+Temp_Tot_Surf_density_df <- density(na.omit(Tot_Mean_Surf_Trends$slope))
+
+global_max_Tot_Temp_surf <- Temp_Tot_Surf_density_df$x[which.max(Temp_Tot_Surf_density_df$y)]
+global_max_Tot_Temp_surf_10 <- global_max_Tot_Temp_surf*10
+
+Temp_Tot_Bot_density_df <- density(na.omit(Tot_Mean_Bot_Trends$slope))
+
+global_max_Tot_Temp_Bot <- Temp_Tot_Bot_density_df$x[which.max(Temp_Tot_Bot_density_df$y)]
+global_max_Tot_Temp_Bot_10 <- global_max_Tot_Temp_Bot*10
+
+
+#Adding the plots together:
+library(gridExtra)
+
+Temp_Density_Mod_Surf <- ggplot(subset(Individual_Comb_Sens, Analysis == "Temp_Hypo"), aes(slope*10)) +
+  geom_density(aes(fill = "Hypo"), color = "black", alpha = 0.2) +
+  geom_density(data = Tot_Mean_Surf_Trends, aes(fill = "Surface"),
+               color = "black", alpha = 0.2) +
+  geom_density(data = subset(Individual_Comb_Sens, Analysis == "Temp_Epi"),
+               aes(fill = "Epi"), color = "black", alpha = 0.2) +
+  theme_classic() +
+  ylab("Relative Density") +
+  xlab("Temperature Trend (°C decade−1)") +
+  geom_vline(xintercept = 0, color = "black", linetype = "solid") +
+  geom_vline(xintercept = global_max_Hypo_Temp_10, color = "cyan3", linetype = "dashed") +
+  geom_vline(xintercept = global_max_Epi_Temp_10, color = "palevioletred3", linetype = "dashed") +
+  geom_vline(xintercept = global_max_Tot_Temp_surf_10, color = "darkseagreen3", linetype = "dashed") +
+  xlim(-2, 2) +
+  scale_fill_manual(values = c("Hypo" = "cyan3", "Surface" = "darkseagreen3", "Epi" = "palevioletred3"),
+                    name = "Layer",
+                    labels = c("Epilimnion", "Epilimnion", "Read Data - Epilimnion"),
+                    guide = guide_legend(title = "Temperature Layer")) +
+  labs(fill = "Temperature Layer") +
+  theme(legend.position = c(0.8, 0.5)) 
+  #theme(legend.position = "right", legend.box = "horizontal", plot.margin = unit(c(1, 0.5, 1, 1.5), "cm"))
+
+Temp_Density_Mod_Surf
+
+
+Temp_Density_Mod_Bot <- ggplot(subset(Individual_Comb_Sens, Analysis == "Temp_Hypo"), aes(slope*10)) +
+  geom_density(aes(fill = "Hypo"), color = "black", alpha = 0.2) +
+  geom_density(data = Tot_Mean_Bot_Trends, aes(fill = "Surface"), 
+               color = "black", alpha = 0.2) +
+  geom_density(data = subset(Individual_Comb_Sens, Analysis == "Temp_Epi"),
+               aes(fill = "Epi"), color = "black", alpha = 0.2) +
+  theme_classic() +
+  ylab("Relative Density") +
+  xlab("Temperature Trend (°C decade−1)") +
+  geom_vline(xintercept = 0, color = "black", linetype = "solid") +
+  geom_vline(xintercept = global_max_Hypo_Temp_10, color = "cyan2", linetype = "dashed") +
+  geom_vline(xintercept = global_max_Tot_Temp_Bot_10, color = "royalblue", linetype = "dashed") +
+  geom_vline(xintercept = global_max_Epi_Temp_10, color = "palevioletred", linetype = "dashed") +
+  xlim(-2, 2) +
+  scale_fill_manual(values = c("Hypo" = "cyan3", "Surface" = "royalblue", "Epi" = "palevioletred3"),
+                    name = "Layer",
+                    labels = c("Epilimnion", "Epilimnion", "Read Data - Hypolimnion"),
+                    guide = guide_legend(title = "Temperature Layer")) +
+  labs(fill = "Temperature Layer") +
+  theme(legend.position = c(0.83, 0.5)) 
+
+Temp_Density_Mod_Bot
+
+#Combining Plots
+grid.arrange(Temp_Density_Mod_Surf, Temp_Density_Mod_Bot, ncol = 2)
+
+
+
+
+
+
+
