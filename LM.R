@@ -94,3 +94,35 @@ plot(dosat_annual_avg$epidosat, dosat_annual_avg$hypodosat, xlab = "Annual avg e
   title('Annual Avg Epi vs Hypo DO Sat
 slope = -0.07, p = 0.73, R2 = 0.00')
 
+##LM of latitude vs depth from master_slopes
+lat <-as.numeric(masterslopes_epi_temp$Latitude)
+zmax <- as.numeric(masterslopes_epi_temp$Max_Depth)
+lm_latdepth <- lm(masterslopes_epi_temp$Max_Depth ~ masterslopes_epi_temp$Latitude)
+print(lm_latdepth)
+summary(lm_latdepth)
+plot(lat, zmax)+
+  abline(lm_latdepth)
+   ##negative but not significant
+
+##LM of latitude vs ag from master_slopes
+lat <-as.numeric(masterslopes_epi_temp$Latitude)
+aglat <- as.numeric(masterslopes_epi_temp$Cult_Crop_Pct)
+lm_latag <- lm(masterslopes_epi_temp$Cult_Crop_Pct ~ masterslopes_epi_temp$Latitude)
+print(lm_latag)
+summary(lm_latag)
+plot(lat, aglat)+
+  abline(lm_latag)+
+  abline(lm_latdev)
+##negative AND significant !!!!!!
+
+##LM of latitude vs dev from master_slopes
+lat <-as.numeric(masterslopes_epi_temp$Latitude)
+devlat <- as.numeric(masterslopes_epi_temp$Total_Dev_Pct)
+lm_latdev <- lm(masterslopes_epi_temp$Total_Dev_Pct ~ masterslopes_epi_temp$Latitude)
+print(lm_latdev)
+summary(lm_latdev)
+plot(lat, devlat)+
+  abline(lm_latdev)
+##similar relationship as aglat but not significant
+
+
