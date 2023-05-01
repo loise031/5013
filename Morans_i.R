@@ -172,3 +172,110 @@ moransiv_hypodosat <- moransI.v(cbind(masterslopes_hypo_dosat$Longitude, masters
 summary(moransiv_hypodosat)
 print(moransiv_hypodosat)
 
+##########################################################################
+## NOW REMOVING ALL INSIG TRENDS FROM THE 6 DFs USED FOR mI IN LAST SECTION
+## then re-running the Moran's I analyses
+## Will include results of BOTH analyses and explain rationale in rough draft
+
+  ##filter out all lakes with insignificant trends from above 6 dfs
+masterslopes_epi_temp_sig <- filter(Master_Slopes, Analysis == "Temp_Epi" & p < 0.05)
+masterslopes_hypo_temp_sig <- filter(Master_Slopes, Analysis == "Temp_Hypo" & p < 0.05)
+masterslopes_epi_docon_sig <- filter(Master_Slopes, Analysis == "DO_Con_Epi" & p < 0.05)
+masterslopes_hypo_docon_sig <- filter(Master_Slopes, Analysis == "DO_Con_Hypo" & p < 0.05)
+masterslopes_epi_dosat_sig <- filter(Master_Slopes, Analysis == "DO_Sat_Epi" & p < 0.05)
+masterslopes_hypo_dosat_sig <- filter(Master_Slopes, Analysis == "DO_Sat_Hypo" & p < 0.05)
+
+  ## EPILIMNION TEMPERATURE ##
+moransiv_epitemp_sig <- moransI.v(cbind(masterslopes_epi_temp_sig$Longitude, masterslopes_epi_temp_sig$Latitude), bws, masterslopes_epi_temp_sig$slope, WType='Binary', family='adaptive', plot = TRUE)
+summary(moransiv_epitemp_sig)
+print(moransiv_epitemp_sig)
+
+  ## HYPOLIMNION TEMPERATURE ##
+moransiv_hypotemp_sig <- moransI.v(cbind(masterslopes_hypo_temp_sig$Longitude, masterslopes_hypo_temp_sig$Latitude), bws, masterslopes_hypo_temp_sig$slope, WType='Binary', family='adaptive', plot = TRUE)
+summary(moransiv_hypotemp_sig)
+print(moransiv_hypotemp_sig)
+
+  ## EPILIMNION DO CONCENTRATION ##
+moransiv_epidocon_sig <- moransI.v(cbind(masterslopes_epi_docon_sig$Longitude, masterslopes_epi_docon_sig$Latitude), bws, masterslopes_epi_docon_sig$slope, WType='Binary', family='adaptive', plot = TRUE)
+summary(moransiv_epidocon_sig)
+print(moransiv_epidocon_sig)
+
+  ## HYPOLIMNION DO CONCENTRATION ##
+moransiv_hypodocon_sig <- moransI.v(cbind(masterslopes_hypo_docon_sig$Longitude, masterslopes_hypo_docon_sig$Latitude), bws, masterslopes_hypo_docon_sig$slope, WType='Binary', family='adaptive', plot = TRUE)
+summary(moransiv_hypodocon_sig)
+print(moransiv_hypodocon_sig)
+
+  ## EPILIMNION DO SATURATION ##
+moransiv_epidosat_sig <- moransI.v(cbind(masterslopes_epi_dosat_sig$Longitude, masterslopes_epi_dosat_sig$Latitude), bws, masterslopes_epi_dosat_sig$slope, WType='Binary', family='adaptive', plot = TRUE)
+summary(moransiv_epidosat_sig)
+print(moransiv_epidosat_sig)
+
+  ## HYPOLIMNION DO SATURATION ##
+moransiv_hypodosat_sig <- moransI.v(cbind(masterslopes_hypo_dosat_sig$Longitude, masterslopes_hypo_dosat_sig$Latitude), bws, masterslopes_hypo_dosat_sig$slope, WType='Binary', family='adaptive', plot = TRUE)
+summary(moransiv_hypodosat_sig)
+print(moransiv_hypodosat_sig)
+
+##################################################################
+## Now making dataframes with trend values weighted to do Moran's I
+## on all 93 lakes but with individual lake trends that are not significant
+## reduced by an order of magnitude to contribute less strong values.
+
+## First, make strings of weighted trend values
+masterslopes_epi_temp_weighted <- ifelse(masterslopes_epi_temp$p < 0.05, masterslopes_epi_temp$slope, masterslopes_epi_temp$slope/10)
+masterslopes_hypo_temp_weighted <- ifelse(masterslopes_hypo_temp$p < 0.05, masterslopes_hypo_temp$slope, masterslopes_hypo_temp$slope/10)
+masterslopes_epi_docon_weighted <- ifelse(masterslopes_epi_docon$p < 0.05, masterslopes_epi_docon$slope, masterslopes_epi_docon$slope/10)
+masterslopes_hypo_docon_weighted <- ifelse(masterslopes_hypo_docon$p < 0.05, masterslopes_hypo_docon$slope, masterslopes_hypo_docon$slope/10)
+masterslopes_epi_dosat_weighted <- ifelse(masterslopes_epi_dosat$p < 0.05, masterslopes_epi_dosat$slope, masterslopes_epi_dosat$slope/10)
+masterslopes_hypo_dosat_weighted <- ifelse(masterslopes_hypo_dosat$p < 0.05, masterslopes_hypo_dosat$slope, masterslopes_hypo_dosat$slope/10)
+
+## Next, make new master weighted df with lakename, lat, long, and all 6 weighted trend strings
+masterslopes_weighted_epitemp <- data.frame(masterslopes_epi_temp$Lagos_Name, masterslopes_epi_temp$Latitude, masterslopes_epi_temp$Longitude, masterslopes_epi_temp_weighted)
+masterslopes_weighted_hypotemp <- data.frame(masterslopes_hypo_temp$Lagos_Name, masterslopes_hypo_temp$Latitude, masterslopes_hypo_temp$Longitude, masterslopes_hypo_temp_weighted)
+masterslopes_weighted_epidocon <- data.frame(masterslopes_epi_docon$Lagos_Name, masterslopes_epi_docon$Latitude, masterslopes_epi_docon$Longitude, masterslopes_epi_docon_weighted)
+masterslopes_weighted_hypodocon <- data.frame(masterslopes_hypo_docon$Lagos_Name, masterslopes_hypo_docon$Latitude, masterslopes_hypo_docon$Longitude, masterslopes_hypo_docon_weighted)
+masterslopes_weighted_epidosat <- data.frame(masterslopes_epi_dosat$Lagos_Name, masterslopes_epi_dosat$Latitude, masterslopes_epi_dosat$Longitude, masterslopes_epi_dosat_weighted)
+masterslopes_weighted_hypodosat <- data.frame(masterslopes_hypo_dosat$Lagos_Name, masterslopes_hypo_dosat$Latitude, masterslopes_hypo_dosat$Longitude, masterslopes_hypo_dosat_weighted)
+
+## Now, finally, do Moran's I for each
+library(lctools)
+
+  ## Epi temp ##
+epitemp_weighted_mori <- moransI(cbind(masterslopes_weighted_epitemp$masterslopes_epi_temp.Longitude, masterslopes_weighted_epitemp$masterslopes_epi_temp.Latitude), 5, masterslopes_epi_temp_weighted)
+print(epitemp_weighted_mori)
+
+  ## Hypo temp ##
+hypotemp_weighted_mori <- moransI(cbind(masterslopes_weighted_hypotemp$masterslopes_hypo_temp.Longitude, masterslopes_weighted_hypotemp$masterslopes_hypo_temp.Latitude), 5, masterslopes_hypo_temp_weighted)
+print(hypotemp_weighted_mori)
+
+ ## Epi docon ##
+epidocon_weighted_mori <- moransI(cbind(masterslopes_weighted_epidocon$masterslopes_epi_docon.Longitude, masterslopes_weighted_epidocon$masterslopes_epi_docon.Latitude), 5, masterslopes_epi_docon_weighted)
+print(epidocon_weighted_mori)
+
+ ## Hypo docon ##
+hypodocon_weighted_mori <- moransI(cbind(masterslopes_weighted_hypodocon$masterslopes_hypo_docon.Longitude, masterslopes_weighted_hypodocon$masterslopes_hypo_docon.Latitude), 5, masterslopes_hypo_docon_weighted)
+print(hypodocon_weighted_mori)
+
+  ## Epi dosat ##
+epidosat_weighted_mori <- moransI(cbind(masterslopes_weighted_epidosat$masterslopes_epi_dosat.Longitude, masterslopes_weighted_epidosat$masterslopes_epi_dosat.Latitude), 5, masterslopes_epi_dosat_weighted)
+print(epidosat_weighted_mori)
+
+  ## Hypo dosat ##
+hypodosat_weighted_mori <- moransI(cbind(masterslopes_weighted_hypodosat$masterslopes_hypo_dosat.Longitude, masterslopes_weighted_hypodosat$masterslopes_hypo_dosat.Latitude), 5, masterslopes_hypo_dosat_weighted)
+print(hypodosat_weighted_mori)
+
+## Looking for autocorrel among lake depths
+depths <- masterslopes_epi_temp$Max_Depth
+depths_num <- as.numeric(depths)
+lakedepths_mori <- moransI(cbind(masterslopes_weighted_epitemp$masterslopes_epi_temp.Longitude, masterslopes_weighted_epitemp$masterslopes_epi_temp.Latitude), 5, depths_num)
+print(lakedepths_mori)
+
+## Looking for autocorrel among lake ag
+ag <- masterslopes_epi_temp$Cult_Crop_Pct
+ag_num <- as.numeric(ag)
+ag_mori <- moransI(cbind(masterslopes_weighted_epitemp$masterslopes_epi_temp.Longitude, masterslopes_weighted_epitemp$masterslopes_epi_temp.Latitude), 5, ag_num)
+print(ag_mori)
+
+## Looking for autocorrel among lake depth plus ag
+depth_plus_ag <- depths_num + ag_num
+depth_plus_ag_mori <- moransI(cbind(masterslopes_weighted_epitemp$masterslopes_epi_temp.Longitude, masterslopes_weighted_epitemp$masterslopes_epi_temp.Latitude), 5, depth_plus_ag)
+print(depth_plus_ag_mori)
