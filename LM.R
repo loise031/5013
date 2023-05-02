@@ -125,4 +125,75 @@ plot(lat, devlat)+
   abline(lm_latdev)
 ##similar relationship as aglat but not significant
 
+##LM of zmax vs dev from master_slopes
+zmax <-as.numeric(masterslopes_epi_temp$Max_Depth)
+zdev <- as.numeric(masterslopes_epi_temp$Total_Dev_Pct)
+lm_zdev <- lm(zdev ~ zmax)
+print(lm_zdev)
+summary(lm_zdev)
+plot(zdev, zmax)+
+  abline(lm_zdev)
+##not significant
 
+##LM of zmax vs ag from master_slopes
+zag <- as.numeric(masterslopes_epi_temp$Cult_Crop_Pct)
+lm_zag <- lm(zag ~ zmax)
+print(lm_zag)
+summary(lm_zag)
+plot(zag, zmax)+
+  abline(lm_zag)
+##not significan
+t
+##checking means of epi temp slopes by state
+mn <- subset(masterslopes_epi_temp, State == "MN")
+mi <- subset(masterslopes_epi_temp, State == "MI")
+wi <- subset(masterslopes_epi_temp, State == "WI")
+mean(mn$slope)
+mean(mi$slope)
+mean(wi$slope)
+sd(mn$slope)
+sd(mi$slope)
+sd(wi$slope)
+
+library(ggplot2)
+state_epitemp_means <- data.frame(
+  name = c("mn", "mi", "wi"),
+  value = c(-0.00044, 0.0128, 0.031),
+  sd = c(0.04, 0.057, 0.0099)
+)
+
+ggplot(state_epitemp_means)+
+  geom_bar(aes(x=name, y=value), stat = "identity", fill = 'skyblue', alpha = 0.7)+
+  geom_errorbar(aes(x=name, ymin=value-sd, ymax=value+sd), width=0.4, color = "orange", alpha = 0.9, size = 1.3)
+
+ggplot(masterslopes_epi_temp, mapping = aes(State, slope)+
+         geom_violin())
+vioplot(mn$slope, mi$slope, wi$slope)
+install.packages("vioplot")
+library(vioplot)
+
+##checking means of hypo temp slopes by state
+mnh <- subset(masterslopes_hypo_temp, State == "MN")
+mih<- subset(masterslopes_hypo_temp, State == "MI")
+wih <- subset(masterslopes_hypo_temp, State == "WI")
+mean(mnh$slope)
+mean(mih$slope)
+mean(wih$slope)
+sd(mnh$slope)
+sd(mih$slope)
+sd(wih$slope)
+
+vioplot(mnh$slope, mih$slope, wih$slope)
+
+##checking means of layer trend slopes by parameter
+epitemp <- subset(masterslopes_epi_temp, State == "MN")
+mih<- subset(masterslopes_hypo_temp, State == "MI")
+wih <- subset(masterslopes_hypo_temp, State == "WI")
+
+
+##violin plots (1 per lyr) by param
+vioplot(masterslopes_epi_temp$slope, masterslopes_epi_docon$slope, masterslopes_epi_dosat$slope,
+        xlab = c("Parameter"), ylab = "Annual Trend", col = "palevioletred3", names = c("Temperature", "DO Con", "DO Sat"))
+
+vioplot(masterslopes_hypo_temp$slope, masterslopes_hypo_docon$slope, masterslopes_hypo_dosat$slope,
+        xlab = c("Parameter"), ylab = "Annual Trend", col = "cyan3", names = c("Temperature", "DO Con", "DO Sat"))
