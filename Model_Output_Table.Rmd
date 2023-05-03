@@ -1,0 +1,53 @@
+---
+title: "5013_Model_Output_Tables"
+author: "McManus"
+date: "2023-04-30"
+output: pdf_document
+---
+
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+Model_Type <- c("Epilimnion","","" ,"", "" ,"", "")
+Model_Test <- c("Temperature Trend ~ log(Schmidt Stability Trend)", "Temperature Trend ~ Modeled Temperature Trend + Stratification Duration Trend", "Temperature Trend ~ Agriculture", "Temperature Trend ~ Max Depth", "Temperature Trend ~ Max Depth + Agriculture", "Observed Temperature Trend ~ Modeled Temperature Trend", "Temperature Trend ~ log(Latitude)")
+frat <- c(0.012, 1.32, 10.2, 5.72, 7.95, 2.67, 4.66)
+pval <- c("0.90", 0.27, "0.002*", "0.02*", "<0.001*", 0.11, "0.03*")
+adjr2 <- c(-0.012, 0.008, 0.115, 0.06, 0.155, 0.021, 0.046)
+tab1 <- data.frame(Model_Type, Model_Test, frat, pval, adjr2)
+tab1
+```
+
+```{r}
+knitr::kable(tab1, "pipe", col.names = c("Layer Modeled", "Model Equation", "F ratio", " P-value", "Adjusted r^2"), align = c("l", "l", "r", "r","r"))
+```
+
+
+
+
+```{r}
+Model_Type <- c("Hypolimnion","","" ,"" ,"")
+Model_Test <- c("Temperature Trend ~ log(Schmidt Stability Trend) + Stratification Duration Trend", "Temperature Trend ~ Stratification Duration Trend", "Temperature Trend ~ log(Schmidt Stability Trend)", "Temperature Trend ~ Agriculture*Development", "Temperature Trend ~ Max Depth")
+frat <- c(0.98, 2.22, 0.05, "1.90", 8.89)
+pval <- c(0.38, 0.14, 0.83, 0.14, "0.004*")
+adjr2 <- c("< -0.001", 0.016, -0.016, 0.034, 0.094)
+tab2 <- data.frame(Model_Type, Model_Test, frat, pval, adjr2)
+tab2
+```
+
+```{r}
+knitr::kable(tab2, "pipe", col.names = c("Layer Modeled", "Model Equation", "F ratio", " P-value", "Adjusted r^2"), align = c("l", "l", "r", "c","c"))
+```
+
+
+
+```{r}
+?kable()
+```
+
+
+
+
+
