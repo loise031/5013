@@ -94,3 +94,110 @@ plot(dosat_annual_avg$epidosat, dosat_annual_avg$hypodosat, xlab = "Annual avg e
   title('Annual Avg Epi vs Hypo DO Sat
 slope = -0.07, p = 0.73, R2 = 0.00')
 
+##LM of latitude vs depth from master_slopes
+lat <-as.numeric(masterslopes_epi_temp$Latitude)
+zmax <- as.numeric(masterslopes_epi_temp$Max_Depth)
+lm_latdepth <- lm(masterslopes_epi_temp$Max_Depth ~ masterslopes_epi_temp$Latitude)
+print(lm_latdepth)
+summary(lm_latdepth)
+plot(lat, zmax)+
+  abline(lm_latdepth)
+   ##negative but not significant
+
+##LM of latitude vs ag from master_slopes
+lat <-as.numeric(masterslopes_epi_temp$Latitude)
+aglat <- as.numeric(masterslopes_epi_temp$Cult_Crop_Pct)
+lm_latag <- lm(masterslopes_epi_temp$Cult_Crop_Pct ~ masterslopes_epi_temp$Latitude)
+print(lm_latag)
+summary(lm_latag)
+plot(lat, aglat)+
+  abline(lm_latag)+
+  abline(lm_latdev)
+##negative AND significant !!!!!!
+
+##LM of latitude vs dev from master_slopes
+lat <-as.numeric(masterslopes_epi_temp$Latitude)
+devlat <- as.numeric(masterslopes_epi_temp$Total_Dev_Pct)
+lm_latdev <- lm(masterslopes_epi_temp$Total_Dev_Pct ~ masterslopes_epi_temp$Latitude)
+print(lm_latdev)
+summary(lm_latdev)
+plot(lat, devlat)+
+  abline(lm_latdev)
+##similar relationship as aglat but not significant
+
+##LM of zmax vs dev from master_slopes
+zmax <-as.numeric(masterslopes_epi_temp$Max_Depth)
+zdev <- as.numeric(masterslopes_epi_temp$Total_Dev_Pct)
+lm_zdev <- lm(zdev ~ zmax)
+print(lm_zdev)
+summary(lm_zdev)
+plot(zdev, zmax)+
+  abline(lm_zdev)
+##not significant
+
+##LM of zmax vs ag from master_slopes
+zag <- as.numeric(masterslopes_epi_temp$Cult_Crop_Pct)
+lm_zag <- lm(zag ~ zmax)
+print(lm_zag)
+summary(lm_zag)
+plot(zag, zmax)+
+  abline(lm_zag)
+##not significan
+t
+##checking means of epi temp slopes by state
+mn <- subset(masterslopes_epi_temp, State == "MN")
+mi <- subset(masterslopes_epi_temp, State == "MI")
+wi <- subset(masterslopes_epi_temp, State == "WI")
+mean(mn$slope)
+mean(mi$slope)
+mean(wi$slope)
+sd(mn$slope)
+sd(mi$slope)
+sd(wi$slope)
+
+library(ggplot2)
+state_epitemp_means <- data.frame(
+  name = c("mn", "mi", "wi"),
+  value = c(-0.00044, 0.0128, 0.031),
+  sd = c(0.04, 0.057, 0.0099)
+)
+
+ggplot(state_epitemp_means)+
+  geom_bar(aes(x=name, y=value), stat = "identity", fill = 'skyblue', alpha = 0.7)+
+  geom_errorbar(aes(x=name, ymin=value-sd, ymax=value+sd), width=0.4, color = "orange", alpha = 0.9, size = 1.3)
+
+ggplot(masterslopes_epi_temp, mapping = aes(State, slope)+
+         geom_violin())
+vioplot(mn$slope, mi$slope, wi$slope)
+install.packages("vioplot")
+library(vioplot)
+
+##checking means of hypo temp slopes by state
+mnh <- subset(masterslopes_hypo_temp, State == "MN")
+mih<- subset(masterslopes_hypo_temp, State == "MI")
+wih <- subset(masterslopes_hypo_temp, State == "WI")
+mean(mnh$slope)
+mean(mih$slope)
+mean(wih$slope)
+sd(mnh$slope)
+sd(mih$slope)
+sd(wih$slope)
+
+vioplot(mnh$slope, mih$slope, wih$slope)
+
+##checking means of layer trend slopes by parameter
+epitemp <- subset(masterslopes_epi_temp, State == "MN")
+mih<- subset(masterslopes_hypo_temp, State == "MI")
+wih <- subset(masterslopes_hypo_temp, State == "WI")
+library(vioplot)
+
+##violin plots (1 per lyr) by param
+epivio <- vioplot(masterslopes_epi_temp$slope, masterslopes_epi_docon$slope, masterslopes_epi_dosat$slope,
+        xlab = c("Parameter"), ylab = "Annual Trend", col = "palevioletred3", names = c("Temperature", "DO Con", "DO Sat"))
+
+hypovio <- vioplot(masterslopes_hypo_temp$slope, masterslopes_hypo_docon$slope, masterslopes_hypo_dosat$slope,
+        xlab = c("Parameter"), ylab = "Annual Trend", col = "cyan3", names = c("Temperature", "DO Con", "DO Sat"))
+
+install.packages("gridExtra")
+library(gridExtra)
+grid.arrange(epivio, hypovio, ncol =2)

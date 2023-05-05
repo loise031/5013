@@ -279,3 +279,15 @@ print(ag_mori)
 depth_plus_ag <- depths_num + ag_num
 depth_plus_ag_mori <- moransI(cbind(masterslopes_weighted_epitemp$masterslopes_epi_temp.Longitude, masterslopes_weighted_epitemp$masterslopes_epi_temp.Latitude), 5, depth_plus_ag)
 print(depth_plus_ag_mori)
+
+## Looking for autocorrel among lake dev%
+dev <- masterslopes_epi_temp$Total_Dev_Pct
+dev_num <- as.numeric(dev)
+dev_mori <- moransI(cbind(masterslopes_weighted_epitemp$masterslopes_epi_temp.Longitude, masterslopes_weighted_epitemp$masterslopes_epi_temp.Latitude), 5, dev_num)
+print(dev_mori)
+
+## Looking for autocorrel among lake dev% + ag%
+devag <- masterslopes_epi_temp$Ag_Plus_Dev
+devag_num <- as.numeric(devag)
+devag_mori <- moransI(cbind(masterslopes_weighted_epitemp$masterslopes_epi_temp.Longitude, masterslopes_weighted_epitemp$masterslopes_epi_temp.Latitude), 5, devag_num)
+print(devag_mori)
