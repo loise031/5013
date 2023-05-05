@@ -189,11 +189,15 @@ vioplot(mnh$slope, mih$slope, wih$slope)
 epitemp <- subset(masterslopes_epi_temp, State == "MN")
 mih<- subset(masterslopes_hypo_temp, State == "MI")
 wih <- subset(masterslopes_hypo_temp, State == "WI")
-
+library(vioplot)
 
 ##violin plots (1 per lyr) by param
-vioplot(masterslopes_epi_temp$slope, masterslopes_epi_docon$slope, masterslopes_epi_dosat$slope,
+epivio <- vioplot(masterslopes_epi_temp$slope, masterslopes_epi_docon$slope, masterslopes_epi_dosat$slope,
         xlab = c("Parameter"), ylab = "Annual Trend", col = "palevioletred3", names = c("Temperature", "DO Con", "DO Sat"))
 
-vioplot(masterslopes_hypo_temp$slope, masterslopes_hypo_docon$slope, masterslopes_hypo_dosat$slope,
+hypovio <- vioplot(masterslopes_hypo_temp$slope, masterslopes_hypo_docon$slope, masterslopes_hypo_dosat$slope,
         xlab = c("Parameter"), ylab = "Annual Trend", col = "cyan3", names = c("Temperature", "DO Con", "DO Sat"))
+
+install.packages("gridExtra")
+library(gridExtra)
+grid.arrange(epivio, hypovio, ncol =2)
